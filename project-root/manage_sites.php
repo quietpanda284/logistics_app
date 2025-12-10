@@ -1,4 +1,14 @@
-<?php include 'config/db_connect.php'; ?>
+<?php
+
+include 'config/db_connect.php';
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
