@@ -1,0 +1,49 @@
+erDiagram
+    Users {
+        int user_id PK
+        string username
+        string password
+        string full_name
+    }
+
+    Sites {
+        int site_id PK
+        string site_name
+        string address
+    }
+
+    VehicleTypes {
+        int type_id PK
+        string type_name "Luton, HGV"
+        int max_weight
+        int max_space
+    }
+
+    Vehicles {
+        int vehicle_id PK
+        string registration_plate
+        int type_id FK
+        int site_id FK "Home Base"
+    }
+
+    Jobs {
+        int job_id PK
+        string goods_name "e.g. 50 Boxes of iPhones"
+        int goods_quantity     
+        int weight "Total Weight"
+        int size "Total Size"
+        boolean hazardous
+        date start_date
+        date deadline
+        int start_site_id FK
+        int end_site_id FK
+        int assigned_vehicle_id FK
+        string status "Outstanding, Completed"
+    }
+
+    %% Relationships
+    Sites ||--o{ Vehicles : "bases"
+    VehicleTypes ||--o{ Vehicles : "defines capacity"
+    Sites ||--o{ Jobs : "starts at"
+    Sites ||--o{ Jobs : "ends at"
+    Vehicles ||--o{ Jobs : "delivers"

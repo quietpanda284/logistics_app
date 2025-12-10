@@ -26,11 +26,11 @@
       </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1>Welcome, User</h1>
-        <p>Select an option below:</p>
+    <div class="container text-center mt-5">
+        <h2>Welcome, User</h2>
+        <p>Select an option below to manage logistics operations:</p>
         
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-md-4 mb-3">
                 <div class="card text-center p-4">
                     <h3>Enter New Job</h3>
