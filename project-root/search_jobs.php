@@ -105,7 +105,7 @@
 
                 // Column 7: Delete Button (We will build the logic next)
                 echo "<td>
-                            <a href='delete_job.php?id=" . $row['job_id'] . "' 
+                            <a href='actions/delete_jobs.php?id=" . $row['job_id'] . "' 
                                class='btn btn-danger btn-sm'
                                onclick='return confirm(\"Are you sure?\");'>
                                X
