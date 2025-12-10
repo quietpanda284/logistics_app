@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_query($conn, $sql)) {
         echo "<h1>Success!</h1><p>Redirecting...</p>";
-        header("refresh:2;url=index.php"); 
+        header("refresh:2;url=../index.php");
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }

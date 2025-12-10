@@ -90,7 +90,7 @@
                 // Column 2: Goods (Name + Qty combined)
                 echo "<td>
                             <strong>" . $row['goods_name'] . "</strong><br>
-                            <small class='text-muted'>Qty: " . $row['goods_quantity'] . "</small>
+                            <small class='text-white'>Qty: " . $row['goods_quantity'] . "</small>
                           </td>";
 
                 // Column 3: The Route (Using the Joined Names!)

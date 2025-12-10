@@ -80,7 +80,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 </div>
 
                 <div class="modal-body">
-                    <form action="insert_job_logic.php" method="POST">
+                    <form action="actions/insert_job_logic.php" method="POST">
 
                         <div class="row">
                             <div class="col-md-6 mb-3">

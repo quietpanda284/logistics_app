@@ -48,7 +48,7 @@ while($row = mysqli_fetch_assoc($result)) {
                     <h4 class="pt-2">Create New Job</h4>
                 </div>
                 <div class="card-body">
-                    <form action="insert_job_logic.php" method="POST">
+                    <form action="actions/insert_job_logic.php" method="POST">
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
