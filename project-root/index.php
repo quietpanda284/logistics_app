@@ -1,35 +1,50 @@
+<?php
+include 'config/db_connect.php';
+
+// "Topper Strategy": Fetch all sites once and store them in an array
+// This is more efficient than asking the database twice (once for Start, once for End).
+$sites = [];
+$sql = "SELECT * FROM sites";
+$result = mysqli_query($conn, $sql);
+while ($row = mysqli_fetch_assoc($result)) {
+    $sites[] = $row;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Co. Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Logistics Co.</a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.php">Logistics Co.</a>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
-            <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
-            <li class="nav-item"><a class="nav-link" href="search_jobs.php">Search Jobs</a></li>
-          </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search_jobs.php">Search Jobs</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
 
     <div class="container text-center mt-5">
         <h2>Welcome, User</h2>
         <p>Select an option below to manage logistics operations:</p>
-        
+
         <div class="row mt-4">
             <div class="col-md-4 mb-3">
                 <div class="card text-center p-4">
@@ -50,106 +65,100 @@
                 <div class="card text-center p-4">
                     <h3>Search Jobs</h3>
                     <a class="btn btn-dark mt-2" style="text-decoration: none; color: white;" href="search_jobs.php">Go</a>
-                  </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="createJobModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <div class="modal-content bg-dark text-white border-secondary">
-      
-      <div class="modal-header border-secondary">
-        <h5 class="modal-title">Create New Job</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white border-secondary">
 
-      <div class="modal-body">
-        <form action="insert_job_logic.php" method="POST">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Create New Job</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Good Name</label>
-                    <input type="text" name="goodname" class="form-control bg-secondary text-white border-0" required>
+                <div class="modal-body">
+                    <form action="insert_job_logic.php" method="POST">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Goods Name</label>
+                                <input type="text" name="goods_name" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Goods Quantity</label>
+                                <input type="number" name="goods_quantity" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" name="weight" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Size (m³)</label>
+                                <input type="number" name="size" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="hazardous" class="form-check-input" id="hazCheckModal">
+                            <label class="form-check-label text-warning" for="hazCheckModal">Hazardous</label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Location</label>
+                                <select name="start_site_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Origin Site...</option>
+                                    <?php
+                                    foreach ($sites as $site) {
+                                        echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Location</label>
+                                <select name="end_site_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Destination...</option>
+                                    <?php
+                                    foreach ($sites as $site) {
+                                        echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="start_date" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Deadline</label>
+                                <input type="date" name="deadline" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer border-secondary">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit Job</button>
+                        </div>
+
+                    </form>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Good Quantity</label>
-                    <input type="number" name="quantity" class="form-control bg-secondary text-white border-0" required>
-                </div>
+
             </div>
-                    
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Weight (kg)</label>
-                    <input type="number" name="weight" class="form-control bg-secondary text-white border-0" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Size (m³)</label>
-                    <input type="number" name="size" class="form-control bg-secondary text-white border-0" required>
-                </div>
-            </div>
-
-            <div class="mb-3 form-check">
-                <input type="checkbox" name="hazardous" class="form-check-input" id="hazCheckModal">
-                <label class="form-check-label text-warning" for="hazCheckModal">Hazardous</label>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="start_site">Starting Site</label>
-                    <select class="form-select bg-secondary text-white border-0">
-                        <option value="London_Depot">London - Heathrow Distribution Centre</option>
-                        <option value="Manchester_Hub">Manchester - Trafford Logistics Hub</option>
-                        <option value="Birmingham_NDC">Birmingham - National Distribution Centre</option>
-                        <option value="Liverpool_HQ">Liverpool - Company Headquarters & Main Depot</option>
-                        <option value="Glasgow_Port">Glasgow - Clydeside Freight Port</option>
-                        <option value="Cardiff_Warehouse">Cardiff - South Wales Storage Facility</option>
-                        <option value="Bristol_West">Bristol - Western Regional Warehouse</option>
-                        <option value="Leeds_North">Leeds - Northern Consolidation Point</option>
-                        <option value="Southampton_Docks">Southampton - Deep Sea Docks Terminal</option>
-                        <option value="Newcastle_Tyne">Newcastle - Tyne River Distribution Point</option>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Destination Site</label>
-                    <select class="form-select bg-secondary text-white border-0">
-                        <option value="London_Depot">London - Heathrow Distribution Centre</option>
-                        <option value="Manchester_Hub">Manchester - Trafford Logistics Hub</option>
-                        <option value="Birmingham_NDC">Birmingham - National Distribution Centre</option>
-                        <option value="Liverpool_HQ">Liverpool - Company Headquarters & Main Depot</option>
-                        <option value="Glasgow_Port">Glasgow - Clydeside Freight Port</option>
-                        <option value="Cardiff_Warehouse">Cardiff - South Wales Storage Facility</option>
-                        <option value="Bristol_West">Bristol - Western Regional Warehouse</option>
-                        <option value="Leeds_North">Leeds - Northern Consolidation Point</option>
-                        <option value="Southampton_Docks">Southampton - Deep Sea Docks Terminal</option>
-                        <option value="Newcastle_Tyne">Newcastle - Tyne River Distribution Point</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" name="start_date" class="form-control bg-secondary text-white border-0" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Deadline</label>
-                    <input type="date" name="deadline" class="form-control bg-secondary text-white border-0" required>
-                </div>
-            </div>
-
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Submit Job</button>
-            </div>
-
-        </form>
-      </div>
-
+        </div>
     </div>
-  </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
