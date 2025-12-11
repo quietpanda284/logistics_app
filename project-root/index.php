@@ -3,7 +3,6 @@ include 'config/db_connect.php';
 
 session_start();
 
-// The Guard: If no ID in session, kick them out
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();

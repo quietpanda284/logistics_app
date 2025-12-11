@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the "Wristband" system
-include 'config/db_connect.php'; // Adjust path based on your folder structure
+include 'config/db_connect.php';
 
 // If user is already logged in, send them to Dashboard
 if (isset($_SESSION['user_id'])) {

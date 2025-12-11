@@ -1,8 +1,11 @@
 <?php 
-include 'config/db_connect.php'; 
+include 'config/db_connect.php';
 
-// "Topper Strategy": Fetch all sites once and store them in an array
-// This is more efficient than asking the database twice (once for Start, once for End).
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
 $sites = [];
 $sql = "SELECT * FROM sites";
 $result = mysqli_query($conn, $sql);
