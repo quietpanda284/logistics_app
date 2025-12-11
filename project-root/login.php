@@ -1,8 +1,7 @@
 <?php
-session_start(); // Start the "Wristband" system
+session_start();
 include 'config/db_connect.php';
 
-// If user is already logged in, send them to Dashboard
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
@@ -14,23 +13,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
 
-    // 1. Check if user exists
     $sql = "SELECT * FROM users WHERE username = '$username'";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
-        
-        // 2. Check Password 
-        // (Note: In a real app, use password_verify(). For this assignment, plain text is okay if you document it, 
-        // but since we inserted 'admin123' directly, we check directly.)
         if ($password == $row['password']) {
             
-            // 3. SUCCESS: Give them the wristband
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['full_name'] = $row['full_name'];
             
-            header("Location: index.php"); // Go to Dashboard
+            header("Location: index.php");
             exit();
         } else {
             $error = "Incorrect password!";
