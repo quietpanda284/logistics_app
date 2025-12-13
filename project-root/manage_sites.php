@@ -50,6 +50,37 @@ if (!isset($_SESSION['user_id'])) {
         <h2>Manage Sites</h2>
         <div class="card bg-dark text-white mt-4">
             <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button type="button" class="ms-auto me-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiteModal">
+                        + Add New Site
+                    </button>
+                </div>
+
+                <div class="modal fade" id="addSiteModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark text-white border-secondary">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-title">Add New Logistics Site</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="insert_site_logic.php" method="POST">
+                                    <div class="mb-3">
+                                        <label>Site Name</label>
+                                        <input type="text" name="site_name" class="form-control bg-secondary text-white border-0" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label>Address</label>
+                                        <textarea name="address" class="form-control bg-secondary text-white border-0" rows="3" required></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Add Site</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <table class="table table-dark table-hover">
                     <thead>
                         <tr>
