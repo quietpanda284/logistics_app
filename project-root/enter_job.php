@@ -45,7 +45,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Account
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                             <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
                         </ul>
                     </li>
