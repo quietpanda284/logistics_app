@@ -3,8 +3,8 @@ session_start();
 
 // The Guard: If no ID in session, kick them out
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+  header("Location: login.php");
+  exit();
 }
 ?>
 
@@ -33,6 +33,14 @@ if (!isset($_SESSION['user_id'])) {
           <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
           <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
           <li class="nav-item"><a class="nav-link active" href="search_jobs.php">Search Jobs</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Account
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
