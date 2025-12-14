@@ -123,12 +123,10 @@ if (!isset($_SESSION['user_id'])) {
 
                 // Column 7: Delete Button (We will build the logic next)
                 echo "<td>
-                            <a href='actions/delete_jobs.php?id=" . $row['job_id'] . "' 
-                               class='btn btn-danger btn-sm'
-                               onclick='return confirm(\"Are you sure?\");'>
-                               X
-                            </a>
-                          </td>";
+                            <button type='button' class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['job_id'] . "'>
+                                X
+                            </button>
+                      </td>";
                 echo "</tr>";
               }
             } else {
@@ -140,6 +138,41 @@ if (!isset($_SESSION['user_id'])) {
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white border-secondary">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-warning">Confirm Deletion</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this job?
+          <br>
+          <span class="text-muted small">This action cannot be undone.</span>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Job</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+      // 1. Button that triggered the modal
+      var button = event.relatedTarget;
+
+      // 2. Extract the Job ID from data-id attribute
+      var jobId = button.getAttribute('data-id');
+
+      // 3. Update the modal's "Delete" button link
+      var confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
+      confirmBtn.href = 'actions/delete_jobs.php?id=' + jobId;
+    });
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
