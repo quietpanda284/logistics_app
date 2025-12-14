@@ -66,15 +66,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <form method="POST">
                             <div class="mb-3">
                                 <label class="form-label">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" required>
+                                <input type="text" name="full_name" class="form-control border-secondary" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Username</label>
-                                <input type="text" name="username" class="form-control" required>
+                                <input type="text" name="username" class="form-control border-secondary" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
-                                <input type="password" name="password" class="form-control" required>
+                                <input type="password" name="password" class="form-control border-secondary" required>
                             </div>
 
                             <hr class="border-secondary my-4">
