@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['full_name'] = $row['full_name'];
+            $_SESSION['role'] = $row['role'];
             
             header("Location: index.php");
             exit();
@@ -41,14 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            color: white;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .login-card {
-            background-color: #1e1e1e;
+
             border: 1px solid #333;
             width: 100%;
             max-width: 400px;
@@ -70,17 +70,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST" action="">
             <div class="mb-3">
                 <label>Username</label>
-                <input type="text" name="username" class="form-control bg-dark text-white border-secondary" required>
+                <input type="text" name="username" class="form-control text-white border-secondary mt-2" required>
             </div>
             <div class="mb-4">
                 <label>Password</label>
-                <input type="password" name="password" class="form-control bg-dark text-white border-secondary" required>
+                <input type="password" name="password" class="form-control text-white border-secondary mt-2" required>
             </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
         </form>
+        <div class="mt-3 text-center"><a style="color: black;" href="register.php">Register Account</a></div>
     </div>
+
 
 </body>
 </html>
