@@ -32,6 +32,7 @@ if (!isset($_SESSION['user_id'])) {
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
                     <li class="nav-item"><a class="nav-link active" href="manage_sites.php">Manage Sites</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_vehicles.php">Manage Vehicles</a></li>
                     <li class="nav-item"><a class="nav-link" href="search_jobs.php">Search Jobs</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -47,10 +48,10 @@ if (!isset($_SESSION['user_id'])) {
     </nav>
 
     <div class="container mt-5">
-        <h2>Manage Sites</h2>
         <div class="card bg-dark text-white mt-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="card-title text-white">Manage Sites</h4>
                     <button type="button" class="ms-auto me-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiteModal">
                         + Add New Site
                     </button>
@@ -66,11 +67,11 @@ if (!isset($_SESSION['user_id'])) {
                             <div class="modal-body">
                                 <form action="insert_site_logic.php" method="POST">
                                     <div class="mb-3">
-                                        <label>Site Name</label>
+                                        <label class="mb-2">Site Name</label>
                                         <input type="text" name="site_name" class="form-control bg-secondary text-white border-0" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label>Address</label>
+                                        <label class="mb-2">Address</label>
                                         <textarea name="address" class="form-control bg-secondary text-white border-0" rows="3" required></textarea>
                                     </div>
                                     <div class="d-flex justify-content-end">
