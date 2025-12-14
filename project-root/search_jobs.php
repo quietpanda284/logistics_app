@@ -119,8 +119,8 @@ if (!isset($_SESSION['user_id'])) {
                 echo "<td>" . $row['status'] . "</td>";
 
                 echo "<td>
-                            <button type='button' class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['job_id'] . "'>
-                                X
+                            <button type='button' class='btn btn-outline-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['job_id'] . "'>
+                                Remove
                             </button>
                       </td>";
                 echo "</tr>";
@@ -145,7 +145,7 @@ if (!isset($_SESSION['user_id'])) {
         <div class="modal-body">
           Are you sure you want to delete this job?
           <br>
-          <span class="text-muted small">This action cannot be undone.</span>
+          <span class="text-warning small">This action cannot be undone.</span>
         </div>
         <div class="modal-footer border-secondary">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
