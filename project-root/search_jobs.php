@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// The Guard: If no ID in session, kick them out
 if (!isset($_SESSION['user_id'])) {
   header("Location: login.php");
   exit();
@@ -105,23 +104,19 @@ if (!isset($_SESSION['user_id'])) {
                 echo "<tr>";
                 echo "<td>" . $formatted_id . "</td>";
 
-                // Column 2: Goods (Name + Qty combined)
                 echo "<td>
                             <strong>" . $row['goods_name'] . "</strong><br>
                             <small class='text-white'>Qty: " . $row['goods_quantity'] . "</small>
                           </td>";
 
-                // Column 3: The Route (Using the Joined Names!)
                 echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
 
-                // Column 4: Dates
                 echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
 
                 echo "<td>" . $hazText . "</td>";
 
                 echo "<td>" . $row['status'] . "</td>";
 
-                // Column 7: Delete Button (We will build the logic next)
                 echo "<td>
                             <button type='button' class='btn btn-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['job_id'] . "'>
                                 X
@@ -162,13 +157,8 @@ if (!isset($_SESSION['user_id'])) {
   <script>
     var deleteModal = document.getElementById('deleteModal');
     deleteModal.addEventListener('show.bs.modal', function(event) {
-      // 1. Button that triggered the modal
       var button = event.relatedTarget;
-
-      // 2. Extract the Job ID from data-id attribute
       var jobId = button.getAttribute('data-id');
-
-      // 3. Update the modal's "Delete" button link
       var confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
       confirmBtn.href = 'actions/delete_jobs.php?id=' + jobId;
     });
