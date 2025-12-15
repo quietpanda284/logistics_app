@@ -21,10 +21,12 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Fleet Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -58,7 +60,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
     <div class="container mt-5">
         <div class="card bg-dark border-secondary shadow">
             <div class="card-body">
-                
+
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="card-title text-white">Fleet Management</h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
@@ -77,16 +79,18 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
-                            <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
-                            <td><?php echo $row['max_weight']; ?> kg</td>
-                            <td><?php echo $row['site_name']; ?></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger">Remove</button>
-                            </td>
-                        </tr>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <tr>
+                                <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
+                                <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
+                                <td><?php echo $row['max_weight']; ?> kg</td>
+                                <td><?php echo $row['site_name']; ?></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="<?php echo $row['vehicle_id']; ?>">
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
                         <?php endwhile; ?>
                     </tbody>
                 </table>
@@ -108,11 +112,11 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                             <label class="mb-2">Registration Plate</label>
                             <input type="text" name="reg_plate" class="form-control bg-secondary text-white border-0" required placeholder="e.g. LDN-55-REG">
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="mb-2">Vehicle Type</label>
                             <select name="type_id" class="form-select bg-secondary text-white border-0">
-                                <?php foreach($types as $type): ?>
+                                <?php foreach ($types as $type): ?>
                                     <option value="<?php echo $type['type_id']; ?>">
                                         <?php echo $type['type_name']; ?> (Max <?php echo $type['max_weight']; ?>kg)
                                     </option>
@@ -123,7 +127,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                         <div class="mb-3">
                             <label class="mb-2">Parked At (Site)</label>
                             <select name="site_id" class="form-select bg-secondary text-white border-0">
-                                <?php foreach($sites as $site): ?>
+                                <?php foreach ($sites as $site): ?>
                                     <option value="<?php echo $site['site_id']; ?>">
                                         <?php echo $site['site_name']; ?>
                                     </option>
@@ -138,6 +142,37 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
         </div>
     </div>
 
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-warning">Confirm Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this vehicle?
+                    <br>
+                    <span class="text-warning small">This action cannot be undone.</span>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Job</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            var button = event.relatedTarget;
+            var vehicleId = button.getAttribute('data-id');
+            var confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
+            confirmBtn.href = 'actions/delete_vehicles.php?id=' + vehicleId;
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
