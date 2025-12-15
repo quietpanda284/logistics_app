@@ -111,7 +111,7 @@ if (!isset($_SESSION['user_id'])) {
                                 <td><?php echo htmlspecialchars($row['address']); ?></td>
                                 <td>
                                     <div class="row align-items-center mb-1">
-                                        <div class="col-4 text-white small">Small Van</div>
+                                        <div class="col-4 text-white small">LWB</div>
                                         <div class="col-8">
                                             <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_small_van']; ?></span>
                                             <span class="badge bg-primary text-white">Act: <?php echo $row['actual_small']; ?></span>
@@ -119,7 +119,7 @@ if (!isset($_SESSION['user_id'])) {
                                     </div>
 
                                     <div class="row align-items-center mb-1">
-                                        <div class="col-4 text-white small">Medium</div>
+                                        <div class="col-4 text-white small">Luton</div>
                                         <div class="col-8">
                                             <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_medium_van']; ?></span>
                                             <span class="badge bg-info text-dark">Act: <?php echo $row['actual_medium']; ?></span>
@@ -127,7 +127,7 @@ if (!isset($_SESSION['user_id'])) {
                                     </div>
 
                                     <div class="row align-items-center">
-                                        <div class="col-4 text-white small">HGV</div>
+                                        <div class="col-4 text-white small">Curtainside</div>
                                         <div class="col-8">
                                             <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_hgv']; ?></span>
                                             <span class="badge bg-warning text-dark">Act: <?php echo $row['actual_hgv']; ?></span>
