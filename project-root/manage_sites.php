@@ -107,7 +107,7 @@ if (!isset($_SESSION['user_id'])) {
 
                             // --- THE TRIGGER BUTTON ---
                             // Notice the target: #editModal_1, #editModal_2, etc.
-                            echo '<button type="button" class="btn btn-warning btn-sm" 
+                            echo '<button type="button" class="btn btn-outline-warning btn-sm" 
                         data-bs-toggle="modal" 
                         data-bs-target="#editModal_' . $site_id . '">
                         Edit
