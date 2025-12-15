@@ -110,14 +110,29 @@ if (!isset($_SESSION['user_id'])) {
                                 <td><?php echo htmlspecialchars($row['site_name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['address']); ?></td>
                                 <td>
-                                    <small class="text-white">Small Van:</small>
-                                    <?php echo $row['target_small_van']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_small']; ?>)</span><br>
+                                    <div class="row align-items-center mb-1">
+                                        <div class="col-4 text-white small">Small Van</div>
+                                        <div class="col-8">
+                                            <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_small_van']; ?></span>
+                                            <span class="badge bg-primary text-white">Act: <?php echo $row['actual_small']; ?></span>
+                                        </div>
+                                    </div>
 
-                                    <small class="text-white">Medium:</small>
-                                    <?php echo $row['target_medium_van']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_medium']; ?>)</span><br>
+                                    <div class="row align-items-center mb-1">
+                                        <div class="col-4 text-white small">Medium</div>
+                                        <div class="col-8">
+                                            <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_medium_van']; ?></span>
+                                            <span class="badge bg-info text-dark">Act: <?php echo $row['actual_medium']; ?></span>
+                                        </div>
+                                    </div>
 
-                                    <small class="text-white">HGV:</small>
-                                    <?php echo $row['target_hgv']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_hgv']; ?>)</span>
+                                    <div class="row align-items-center">
+                                        <div class="col-4 text-white small">HGV</div>
+                                        <div class="col-8">
+                                            <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_hgv']; ?></span>
+                                            <span class="badge bg-warning text-dark">Act: <?php echo $row['actual_hgv']; ?></span>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>">
