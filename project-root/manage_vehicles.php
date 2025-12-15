@@ -15,7 +15,6 @@ $sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt
 
 $result = mysqli_query($conn, $sql);
 
-// We also need lists for the 'Add Modal' dropdowns later
 $sites = mysqli_query($conn, "SELECT * FROM sites");
 $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
 ?>

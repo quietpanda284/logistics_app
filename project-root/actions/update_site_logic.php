@@ -3,9 +3,9 @@ include '../config/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $id = $_POST['site_id'];
-    $name = $_POST['site_name'];
-    $address = $_POST['address'];
+    $id = (int)$_POST['site_id'];
+    $name = mysqli_real_escape_string($conn, $_POST['site_name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
 
     $sql = "UPDATE sites SET site_name='$name', address='$address' WHERE site_id=$id";
 

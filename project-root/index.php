@@ -164,7 +164,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit Job</button>
                         </div>
-
                     </form>
                 </div>
 

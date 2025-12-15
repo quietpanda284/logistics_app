@@ -9,8 +9,8 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reg = mysqli_real_escape_string($conn, $_POST['reg_plate']);
-    $type = $_POST['type_id'];
-    $site = $_POST['site_id'];
+    $type = (int)$_POST['type_id'];
+    $site = (int)$_POST['site_id'];
 
     $sql = "INSERT INTO vehicles (registration_plate, type_id, site_id) VALUES ('$reg', '$type', '$site')";
 

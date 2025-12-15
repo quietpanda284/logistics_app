@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 include '../config/db_connect.php';
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = (int)$_GET['id'];
     $sql = "UPDATE jobs SET status = 'Cancelled' WHERE job_id = $id";
 
     if (mysqli_query($conn, $sql)) {

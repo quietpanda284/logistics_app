@@ -3,16 +3,15 @@ include '../config/db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $goods_name = $_POST['goods_name'];
-    $quantity = $_POST['goods_quantity'];
-    $weight = $_POST['weight'];
-    $size = $_POST['size'];
-    $start_date = $_POST['start_date'];
-    $deadline = $_POST['deadline'];
+    $goods_name = mysqli_real_escape_string($conn, $_POST['goods_name']);
+    $start_date = mysqli_real_escape_string($conn, $_POST['start_date']);
+    $deadline   = mysqli_real_escape_string($conn, $_POST['deadline']);
 
-    $start_site_id = $_POST['start_site_id'];
-    $end_site_id = $_POST['end_site_id'];
-
+    $quantity      = (int) $_POST['goods_quantity'];
+    $weight        = (int) $_POST['weight'];
+    $size          = (int) $_POST['size'];
+    $start_site_id = (int) $_POST['start_site_id'];
+    $end_site_id   = (int) $_POST['end_site_id'];
     $hazardous = isset($_POST['hazardous']) ? 1 : 0;
 
     $sql = "INSERT INTO jobs (goods_name, goods_quantity, weight, size, hazardous, start_date, deadline, start_site_id, end_site_id, status) 
@@ -20,9 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_query($conn, $sql)) {
         echo "<h1>Success!</h1><p>Redirecting...</p>";
-    header("refresh:1;url=../index.php");
+        header("refresh:1;url=../index.php");
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        //UPDATE SECURITY
+        echo "Error: " . mysqli_error($conn); 
     }
 
     mysqli_close($conn);
