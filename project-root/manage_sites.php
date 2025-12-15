@@ -48,11 +48,11 @@ if (!isset($_SESSION['user_id'])) {
     </nav>
 
     <div class="container mt-5">
-        <div class="card bg-dark text-white mt-4">
+        <div class="card bg-dark border-secondary shadow">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title text-white">Manage Sites</h4>
-                    <button type="button" class="ms-auto me-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiteModal">
+                    <h4 class="text-white">Manage Sites</h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiteModal">
                         + Add New Site
                     </button>
                 </div>
@@ -61,110 +61,125 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="modal-dialog">
                         <div class="modal-content bg-dark text-white border-secondary">
                             <div class="modal-header border-secondary">
-                                <h5 class="modal-title">Add New Logistics Site</h5>
+                                <h5 class="modal-title">Add New Site</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <form action="insert_site_logic.php" method="POST">
                                     <div class="mb-3">
-                                        <label class="mb-2">Site Name</label>
+                                        <label>Site Name</label>
                                         <input type="text" name="site_name" class="form-control bg-secondary text-white border-0" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="mb-2">Address</label>
+                                        <label>Address</label>
                                         <textarea name="address" class="form-control bg-secondary text-white border-0" rows="3" required></textarea>
                                     </div>
-                                    <div class="d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary">Add Site</button>
-                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Add Site</button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <table class="table table-dark table-hover">
+
+                <table class="table table-dark table-hover border-secondary">
                     <thead>
                         <tr>
                             <th>Site Name</th>
                             <th>Address</th>
+                            <th>Fleet Status (Target vs Actual)</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        // 1. Fetch Data
-                        $sql = "SELECT * FROM sites";
+                        // THE SIMPLE QUERY
+                        // We just ask: "Count how many vehicles of type 1, 2, and 3 are here?"
+                        // (Ensure your Type IDs are correct: 1=Small, 2=Medium, 3=HGV)
+                        $sql = "SELECT s.*, 
+                        (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 1) as actual_small,
+                        (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 2) as actual_medium,
+                        (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 3) as actual_hgv
+                        FROM sites s";
+
                         $result = mysqli_query($conn, $sql);
 
-                        // 2. The Loop
                         while ($row = mysqli_fetch_assoc($result)) {
-                            $site_id = $row['site_id']; // Store ID in a variable for easier use
-
-                            echo "<tr>";
-                            echo "<td>" . $row['site_name'] . "</td>";
-                            echo "<td>" . $row['address'] . "</td>";
-                            echo "<td>";
-
-                            // --- THE TRIGGER BUTTON ---
-                            // Notice the target: #editModal_1, #editModal_2, etc.
-                            echo '<button type="button" class="btn btn-outline-warning btn-sm" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#editModal_' . $site_id . '">
-                        Edit
-                      </button>';
-
-                            echo "</td>";
-                            echo "</tr>";
-
-                            // --- THE MODAL (Generated INSIDE the loop) ---
-                            // We create a hidden modal immediately after the row
+                            $site_id = $row['site_id'];
                         ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['site_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['address']); ?></td>
+                                <td>
+                                    <small class="text-white">Small Van:</small>
+                                    <?php echo $row['target_small_van']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_small']; ?>)</span><br>
 
-                            <div class="modal fade" id="editModal_<?php echo $site_id; ?>" tabindex="-1" aria-hidden="true">
+                                    <small class="text-white">Medium:</small>
+                                    <?php echo $row['target_medium_van']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_medium']; ?>)</span><br>
+
+                                    <small class="text-white">HGV:</small>
+                                    <?php echo $row['target_hgv']; ?> <span class="text-secondary">(Act: <?php echo $row['actual_hgv']; ?>)</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>">
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade" id="editModal_<?php echo $site_id; ?>" tabindex="-1">
                                 <div class="modal-dialog">
                                     <div class="modal-content bg-dark text-white border-secondary">
-
                                         <div class="modal-header border-secondary">
-                                            <h5 class="modal-title">Edit Site: <?php echo $row['site_name']; ?></h5>
+                                            <h5 class="modal-title">Edit Site</h5>
                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                         </div>
-
                                         <div class="modal-body">
                                             <form action="actions/update_site_logic.php" method="POST">
-
                                                 <input type="hidden" name="site_id" value="<?php echo $site_id; ?>">
 
                                                 <div class="mb-3">
                                                     <label>Site Name</label>
-                                                    <input type="text" name="site_name" class="form-control bg-secondary text-white border-0"
-                                                        value="<?php echo $row['site_name']; ?>" required>
+                                                    <input type="text" name="site_name" class="form-control bg-secondary text-white" value="<?php echo $row['site_name']; ?>">
                                                 </div>
-
                                                 <div class="mb-3">
                                                     <label>Address</label>
-                                                    <textarea name="address" class="form-control bg-secondary text-white border-0" rows="3"><?php echo $row['address']; ?></textarea>
+                                                    <textarea name="address" class="form-control bg-secondary text-white"><?php echo $row['address']; ?></textarea>
                                                 </div>
 
-                                                <div class="d-flex justify-content-end">
-                                                    <button type="submit" class="btn btn-success">Save Changes</button>
+                                                <hr class="border-secondary">
+                                                <h6 class="text-info">Set Required Fleet Size</h6>
+
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>Small Vans</label></div>
+                                                    <div class="col-6">
+                                                        <input type="number" name="target_small" class="form-control form-control-sm" value="<?php echo $row['target_small_van']; ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>Medium Vans</label></div>
+                                                    <div class="col-6">
+                                                        <input type="number" name="target_medium" class="form-control form-control-sm" value="<?php echo $row['target_medium_van']; ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>HGVs</label></div>
+                                                    <div class="col-6">
+                                                        <input type="number" name="target_hgv" class="form-control form-control-sm" value="<?php echo $row['target_hgv']; ?>">
+                                                    </div>
                                                 </div>
 
+                                                <button type="submit" class="btn btn-success w-100 mt-3">Save Changes</button>
                                             </form>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-                        <?php
-                        } // End of While Loop
-                        ?>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
