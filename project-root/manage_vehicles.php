@@ -156,7 +156,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                 </div>
                 <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Job</a>
+                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Vehicle</a>
                 </div>
             </div>
         </div>

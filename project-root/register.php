@@ -36,15 +36,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="container min-vh-100 d-flex justify-content-center align-items-center py-4">
 
-        <div class="col-12 col-md-5 col-lg-4">
+        <div class="col-12 col-md-6 col-lg-4">
 
             <div class="card border-secondary shadow-lg">
                 <div class="card-body p-4">
@@ -81,7 +82,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="mb-4">
                                 <label class="form-label text-warning fw-bold">Company Access Code</label>
-                                <input type="password" name="secret_code" class="form-control border-warning" placeholder="Required" required>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-warning border-warning">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-lock-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.777 11.777 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7.159 7.159 0 0 0 1.048-.625 11.775 11.775 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.541 1.541 0 0 0-1.044-1.263 62.467 62.467 0 0 0-2.887-.87C9.843.266 8.69 0 8 0zm0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5z"/>
+                                        </svg>
+                                    </span>
+                                    <input type="password" name="secret_code" class="form-control border-warning" placeholder="Required" required>
+                                </div>
                             </div>
 
                             <div class="d-grid gap-2">
@@ -98,5 +106,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
 </body>
-
 </html>
