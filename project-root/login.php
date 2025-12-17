@@ -1,40 +1,3 @@
-<?php
-session_start();
-include 'config/db_connect.php';
-
-if (isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    exit();
-}
-
-$error = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = $_POST['password'];
-
-    $sql = "SELECT * FROM users WHERE username = '$username'";
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) == 1) {
-        $row = mysqli_fetch_assoc($result);
-        if ($password == $row['password']) {
-
-            $_SESSION['user_id'] = $row['user_id'];
-            $_SESSION['full_name'] = $row['full_name'];
-            $_SESSION['role'] = $row['role'];
-
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "Incorrect password!";
-        }
-    } else {
-        $error = "User not found!";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,6 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login - Logistics Co.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -76,13 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="login-card">
                     <h2 class="text-center mb-4">Logistics Co.</h2>
 
-                    <?php if (isset($error) && $error): ?>
-                        <div class="alert alert-danger" role="alert">
-                            <?php echo $error; ?>
-                        </div>
-                    <?php endif; ?>
+                    <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>
 
-                    <form method="POST" action="">
+                    <form method="POST" action="" id="ajaxLoginForm">
                         <div class="mb-3">
                             <label class="form-label">Username</label>
                             <input type="text" name="username" class="form-control border" required>
@@ -94,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-dark btn-md">Login</button>
+                            <button type="submit" class="btn btn-dark btn-md" id="loginBtn">Login</button>
                         </div>
                     </form>
 
@@ -106,6 +66,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+
+    <script>
+    $(document).ready(function() {
+        $('#ajaxLoginForm').submit(function(e) {
+            e.preventDefault(); 
+
+            var formData = $(this).serialize();
+
+            $('#loginBtn').prop('disabled', true).text('Authenticating...');
+
+            $.ajax({
+                type: 'POST',
+                url: 'api/auth_login.php',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        window.location.href = 'index.php';
+                    } else {
+                        $('#alertBox').removeClass('d-none').text(response.message);
+                        $('#loginBtn').prop('disabled', false).text('Login');
+                    }
+                },
+                error: function() {
+                    $('#alertBox').removeClass('d-none').text('System Error. Cannot connect to server.');
+                    $('#loginBtn').prop('disabled', false).text('Login');
+                }
+            });
+        });
+    });
+    </script>
 
 </body>
 </html>
