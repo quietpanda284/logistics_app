@@ -62,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         #reglink:hover {
             text-decoration: underline;
-            color: #0d6efd;
         }
     </style>
 </head>
@@ -95,12 +94,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-md">Login</button>
+                            <button type="submit" class="btn btn-dark btn-md">Login</button>
                         </div>
                     </form>
 
                     <div class="mt-4 text-center">
-                        <span class="text-muted">New here?</span> 
                         <a id="reglink" href="register.php">Register Account</a>
                     </div>
                 </div>

@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Create Account</button>
+                                <button type="submit" class="btn btn-dark">Create Account</button>
                                 <a href="login.php" class="btn btn-outline-dark">Back to Login</a>
                             </div>
                         </form>
