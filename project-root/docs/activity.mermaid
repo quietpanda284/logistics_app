@@ -1,0 +1,69 @@
+graph TD
+    %% Start and Authentication Flow
+    Start((Start)) --> LoginPag[Login Page]
+    LoginPag --> HasAcc{Has Account?}
+    
+    HasAcc -- No --> Register[Register Page]
+    Register --> InputReg[Enter Details & Secret Code]
+    InputReg --> CreateAcc[Create Account]
+    CreateAcc --> LoginPag
+    
+    HasAcc -- Yes --> EnterCreds[Enter Username/Password]
+    EnterCreds --> Auth{Valid Credentials?}
+    Auth -- No --> ShowErr[Show Error Message]
+    ShowErr --> LoginPag
+    
+    %% Main Dashboard Flow
+    Auth -- Yes --> Dashboard[Dashboard / Home]
+    
+    Dashboard --> SelectAction{Select Action}
+    
+    %% Create Job Flow
+    SelectAction --> ActJob[Create Job]
+    ActJob --> FormJob[Enter Goods, Weight, Route]
+    FormJob --> SubJob[Submit Job]
+    SubJob --> SaveJob[Insert into DB]
+    SaveJob --> Dashboard
+    
+    %% Manage Sites Flow
+    SelectAction --> ActSites[Manage Sites]
+    ActSites --> ViewSites[View Sites List]
+    ViewSites --> SiteDec{User Decision}
+    
+    SiteDec -- Add New --> FormSite[Enter Site Name & Address]
+    FormSite --> SaveSite[Insert Site]
+    SaveSite --> ViewSites
+    
+    SiteDec -- Edit --> EditSite[Edit Details & Fleet Targets]
+    EditSite --> UpdateSite[Update DB]
+    UpdateSite --> ViewSites
+    
+    %% Manage Vehicles Flow
+    SelectAction --> ActFleet[Manage Vehicles]
+    ActFleet --> ViewFleet[View Fleet Table]
+    ViewFleet --> FleetDec{User Decision}
+    
+    FleetDec -- Add New --> FormVeh[Enter Reg, Type, Location]
+    FormVeh --> SaveVeh[Insert Vehicle]
+    SaveVeh --> ViewFleet
+    
+    FleetDec -- Delete --> ConfDelVeh[Confirm Deletion]
+    ConfDelVeh --> DelVeh[Delete from DB]
+    DelVeh --> ViewFleet
+    
+    %% Search/Manage Jobs Flow
+    SelectAction --> ActSearch[Search Jobs]
+    ActSearch --> ViewJobs[View Job Status Table]
+    ViewJobs --> JobDec{User Decision}
+    
+    JobDec -- Search --> Filter[Enter Search Query]
+    Filter --> ViewJobs
+    
+    JobDec -- Delete --> ConfDelJob[Confirm Deletion]
+    ConfDelJob --> DelJob[Delete from DB]
+    DelJob --> ViewJobs
+    
+    %% Logout Flow
+    SelectAction --> Logout[Logout]
+    Logout --> KillSess[Destroy Session]
+    KillSess --> LoginPag

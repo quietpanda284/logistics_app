@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = mysqli_real_escape_string($conn, $_POST['site_name']);
     $address = mysqli_real_escape_string($conn, $_POST['address']);
     
-    // Capture the 3 simple numbers
     $small = (int)$_POST['target_small'];
     $med   = (int)$_POST['target_medium'];
     $hgv   = (int)$_POST['target_hgv'];
