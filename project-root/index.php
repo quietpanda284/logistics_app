@@ -54,6 +54,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                             Account
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="account.php">Profile</a></li>
                             <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
                         </ul>
                     </li>

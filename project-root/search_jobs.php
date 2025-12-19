@@ -38,6 +38,7 @@ if (!isset($_SESSION['user_id'])) {
               Account
             </a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+              <li><a class="dropdown-item" href="account.php">Profile</a></li>
               <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
             </ul>
           </li>
@@ -63,7 +64,8 @@ if (!isset($_SESSION['user_id'])) {
               <th>Job ID</th>
               <th>Goods</th>
               <th>Route</th>
-              <th>Assigned Vehicle</th> <th>Dates</th>
+              <th>Assigned Vehicle</th>
+              <th>Dates</th>
               <th>Hazardous</th>
               <th>Current Status</th>
               <th>Update Status</th>
@@ -74,7 +76,7 @@ if (!isset($_SESSION['user_id'])) {
             include 'config/db_connect.php';
 
             // Updated Query to include Vehicle details
-$sql = "SELECT 
+            $sql = "SELECT 
                         j.job_id, 
                         j.goods_name, 
                         j.goods_quantity, 
@@ -105,10 +107,10 @@ $sql = "SELECT
                 // Formatting Logic
                 $formatted_id = sprintf("JN%03d", $row['job_id']);
                 $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
-                
+
                 // Handle cases where vehicle might be null (old data)
                 $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
-                
+
                 // Now we fetch 'type_name' from the joined table
                 $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
 
@@ -126,9 +128,9 @@ $sql = "SELECT
 
                 // New Column: Vehicle with Hover Effect
                 echo "<td>
-                        <span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" . 
-                          $regNo . 
-                        "</span>
+                        <span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" .
+                  $regNo .
+                  "</span>
                       </td>";
 
                 echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
@@ -142,10 +144,10 @@ $sql = "SELECT
                         <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
                             <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
                             <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>";
-                
+
                 foreach ($statusOptions as $opt) {
-                    $selected = ($row['status'] == $opt) ? 'selected' : '';
-                    echo "<option value='$opt' $selected>$opt</option>";
+                  $selected = ($row['status'] == $opt) ? 'selected' : '';
+                  echo "<option value='$opt' $selected>$opt</option>";
                 }
 
                 echo "      </select>
