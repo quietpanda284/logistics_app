@@ -14,6 +14,13 @@ $result = mysqli_query($conn, $sql);
 while ($row = mysqli_fetch_assoc($result)) {
     $sites[] = $row;
 }
+
+$vehicles = [];
+$sql_vehicles = "SELECT * FROM vehicles"; // Assuming your table is named 'vehicles'
+$result_vehicles = mysqli_query($conn, $sql_vehicles);
+while ($row = mysqli_fetch_assoc($result_vehicles)) {
+    $vehicles[] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -119,9 +126,24 @@ while ($row = mysqli_fetch_assoc($result)) {
                             </div>
                         </div>
 
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" name="hazardous" class="form-check-input" id="hazCheckModal">
-                            <label class="form-check-label text-warning" for="hazCheckModal">Hazardous</label>
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Assign Vehicle</label>
+                                <select name="vehicle_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Vehicle...</option>
+                                    <?php
+                                    foreach ($vehicles as $vehicle) {
+                                        echo "<option value='" . $vehicle['vehicle_id'] . "'>" . $vehicle['registration_plate'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6 pt-4">
+                                <div class="form-check">
+                                    <input type="checkbox" name="hazardous" class="form-check-input" id="hazCheck">
+                                    <label class="form-check-label text-warning" for="hazCheck">Hazardous Cargo</label>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
