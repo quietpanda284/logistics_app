@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         mysqli_stmt_close($stmt);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Database error (Check).']);
+        echo json_encode(['status' => 'error', 'message' => 'Database error.']);
         exit();
     }
 

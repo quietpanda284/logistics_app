@@ -57,7 +57,7 @@ if (!isset($_SESSION['user_id'])) {
           </div>
         </form>
 
-        <table class="table table-dark table-hover">
+        <table class="table table-dark table-hover align-middle">
           <thead>
             <tr>
               <th>Job ID</th>
@@ -65,8 +65,8 @@ if (!isset($_SESSION['user_id'])) {
               <th>Route</th>
               <th>Dates</th>
               <th>Hazardous</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th>Current Status</th>
+              <th>Update Status</th>
             </tr>
           </thead>
           <tbody>
@@ -87,7 +87,6 @@ if (!isset($_SESSION['user_id'])) {
                     JOIN sites s1 ON j.start_site_id = s1.site_id
                     JOIN sites s2 ON j.end_site_id = s2.site_id";
 
-            // If user used the search bar, add a filter
             if (isset($_GET['search']) && !empty($_GET['search'])) {
               $search = $_GET['search'];
               $sql .= " WHERE j.goods_name LIKE '%$search%'";
@@ -102,13 +101,16 @@ if (!isset($_SESSION['user_id'])) {
                 $formatted_id = sprintf("JN%03d", $row['job_id']);
                 $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
 
+                // Status Logic: Define available options
+                $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
+
                 echo "<tr>";
                 echo "<td>" . $formatted_id . "</td>";
 
                 echo "<td>
-                            <strong>" . $row['goods_name'] . "</strong><br>
-                            <small class='text-white'>Qty: " . $row['goods_quantity'] . "</small>
-                          </td>";
+                        <strong>" . $row['goods_name'] . "</strong><br>
+                        <small class='text-white-50'>Qty: " . $row['goods_quantity'] . "</small>
+                      </td>";
 
                 echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
 
@@ -116,12 +118,23 @@ if (!isset($_SESSION['user_id'])) {
 
                 echo "<td>" . $hazText . "</td>";
 
+                // Display current status as text for clarity
                 echo "<td>" . $row['status'] . "</td>";
 
+                // Action Column: Form with Dropdown
                 echo "<td>
-                            <button type='button' class='btn btn-outline-danger btn-sm' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['job_id'] . "'>
-                                Remove
-                            </button>
+                        <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
+                            <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
+                            <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>";
+                
+                foreach ($statusOptions as $opt) {
+                    $selected = ($row['status'] == $opt) ? 'selected' : '';
+                    echo "<option value='$opt' $selected>$opt</option>";
+                }
+
+                echo "      </select>
+                            <button type='submit' class='btn btn-outline-warning btn-sm'>Update</button>
+                        </form>
                       </td>";
                 echo "</tr>";
               }
@@ -134,36 +147,6 @@ if (!isset($_SESSION['user_id'])) {
       </div>
     </div>
   </div>
-
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white border-secondary">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title text-warning">Confirm Deletion</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to delete this job?
-          <br>
-          <span class="text-warning small">This action cannot be undone.</span>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Job</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    var deleteModal = document.getElementById('deleteModal');
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-      var button = event.relatedTarget;
-      var jobId = button.getAttribute('data-id');
-      var confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
-      confirmBtn.href = 'actions/delete_jobs.php?id=' + jobId;
-    });
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
