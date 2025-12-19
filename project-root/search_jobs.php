@@ -63,7 +63,7 @@ if (!isset($_SESSION['user_id'])) {
               <th>Job ID</th>
               <th>Goods</th>
               <th>Route</th>
-              <th>Dates</th>
+              <th>Assigned Vehicle</th> <th>Dates</th>
               <th>Hazardous</th>
               <th>Current Status</th>
               <th>Update Status</th>
@@ -73,7 +73,8 @@ if (!isset($_SESSION['user_id'])) {
             <?php
             include 'config/db_connect.php';
 
-            $sql = "SELECT 
+            // Updated Query to include Vehicle details
+$sql = "SELECT 
                         j.job_id, 
                         j.goods_name, 
                         j.goods_quantity, 
@@ -82,10 +83,14 @@ if (!isset($_SESSION['user_id'])) {
                         j.deadline, 
                         j.status,
                         s1.site_name AS start_name, 
-                        s2.site_name AS end_name
+                        s2.site_name AS end_name,
+                        v.registration_plate,
+                        vt.type_name            
                     FROM jobs j
                     JOIN sites s1 ON j.start_site_id = s1.site_id
-                    JOIN sites s2 ON j.end_site_id = s2.site_id";
+                    JOIN sites s2 ON j.end_site_id = s2.site_id
+                    LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
+                    LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id"; // Second join to get the name
 
             if (isset($_GET['search']) && !empty($_GET['search'])) {
               $search = $_GET['search'];
@@ -100,8 +105,13 @@ if (!isset($_SESSION['user_id'])) {
                 // Formatting Logic
                 $formatted_id = sprintf("JN%03d", $row['job_id']);
                 $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
+                
+                // Handle cases where vehicle might be null (old data)
+                $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
+                
+                // Now we fetch 'type_name' from the joined table
+                $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
 
-                // Status Logic: Define available options
                 $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
 
                 echo "<tr>";
@@ -114,14 +124,20 @@ if (!isset($_SESSION['user_id'])) {
 
                 echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
 
+                // New Column: Vehicle with Hover Effect
+                echo "<td>
+                        <span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" . 
+                          $regNo . 
+                        "</span>
+                      </td>";
+
                 echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
 
                 echo "<td>" . $hazText . "</td>";
 
-                // Display current status as text for clarity
                 echo "<td>" . $row['status'] . "</td>";
 
-                // Action Column: Form with Dropdown
+                // Action Column
                 echo "<td>
                         <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
                             <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
@@ -139,7 +155,7 @@ if (!isset($_SESSION['user_id'])) {
                 echo "</tr>";
               }
             } else {
-              echo "<tr><td colspan='7' class='text-center'>No jobs found.</td></tr>";
+              echo "<tr><td colspan='8' class='text-center'>No jobs found.</td></tr>";
             }
             ?>
           </tbody>
