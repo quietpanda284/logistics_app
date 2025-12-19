@@ -39,7 +39,7 @@ if (!isset($_SESSION['user_id'])) {
             </a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
               <li><a class="dropdown-item" href="account.php">Profile</a></li>
-              <li><hr class="dropdown-divider"></li> <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
+              <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
             </ul>
           </li>
         </ul>
