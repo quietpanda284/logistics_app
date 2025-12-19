@@ -7,7 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt.max_weight 
+// 1. Updated SQL to fetch 'vt.max_space'
+$sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt.max_weight, vt.max_space 
         FROM vehicles v
         JOIN sites s ON v.site_id = s.site_id
         JOIN vehicle_types vt ON v.type_id = vt.type_id
@@ -74,7 +75,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                             <th>Plate Number</th>
                             <th>Type</th>
                             <th>Capacity (kg)</th>
-                            <th>Current Location</th>
+                            <th>Max Space (m&sup3;)</th> <th>Current Location</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -84,7 +85,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                                 <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
                                 <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
                                 <td><?php echo $row['max_weight']; ?> kg</td>
-                                <td><?php echo $row['site_name']; ?></td>
+                                <td><?php echo $row['max_space']; ?> m&sup3;</td> <td><?php echo $row['site_name']; ?></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="<?php echo $row['vehicle_id']; ?>">
                                         Remove
