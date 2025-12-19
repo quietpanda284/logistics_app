@@ -1,0 +1,176 @@
+-- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
+--
+-- Host: localhost    Database: logistics_db
+-- ------------------------------------------------------
+-- Server version	8.0.43
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `jobs`
+--
+
+DROP TABLE IF EXISTS `jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jobs` (
+  `job_id` int NOT NULL AUTO_INCREMENT,
+  `goods_name` varchar(255) NOT NULL,
+  `goods_quantity` int NOT NULL,
+  `weight` int NOT NULL,
+  `size` int NOT NULL,
+  `hazardous` tinyint(1) DEFAULT '0',
+  `start_date` date DEFAULT NULL,
+  `deadline` date DEFAULT NULL,
+  `status` enum('Outstanding','In Progress','Completed','Cancelled') DEFAULT 'Outstanding',
+  `start_site_id` int DEFAULT NULL,
+  `end_site_id` int DEFAULT NULL,
+  `assigned_vehicle_id` int DEFAULT NULL,
+  PRIMARY KEY (`job_id`),
+  KEY `start_site_id` (`start_site_id`),
+  KEY `end_site_id` (`end_site_id`),
+  KEY `assigned_vehicle_id` (`assigned_vehicle_id`),
+  CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`start_site_id`) REFERENCES `sites` (`site_id`) ON DELETE CASCADE,
+  CONSTRAINT `jobs_ibfk_2` FOREIGN KEY (`end_site_id`) REFERENCES `sites` (`site_id`) ON DELETE CASCADE,
+  CONSTRAINT `jobs_ibfk_3` FOREIGN KEY (`assigned_vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobs`
+--
+
+LOCK TABLES `jobs` WRITE;
+/*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sites`
+--
+
+DROP TABLE IF EXISTS `sites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sites` (
+  `site_id` int NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(100) NOT NULL,
+  `address` text NOT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sites`
+--
+
+LOCK TABLES `sites` WRITE;
+/*!40000 ALTER TABLE `sites` DISABLE KEYS */;
+INSERT INTO `sites` VALUES (1,'Liverpool HQ','123 Dockside Road, Liverpool, L3 4AA'),(2,'London Depot','45 Capital Park, London, E1 6AN'),(3,'Manchester Hub','88 Industrial Estate, Manchester, M1 2BB'),(4,'Birmingham Branch','22 Midlands Way, Birmingham, B2 5CC'),(5,'Glasgow Outpost','9 Highland Drive, Glasgow, G1 1DD');
+/*!40000 ALTER TABLE `sites` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `full_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'admin','admin123','System Administrator',NULL),(2,'driver_bob','pass123','Bob The Driver',NULL),(3,'logistics_mgr','securepass','Sarah Manager',NULL);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_types`
+--
+
+DROP TABLE IF EXISTS `vehicle_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_types` (
+  `type_id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(50) NOT NULL,
+  `max_weight` int NOT NULL,
+  `max_space` int NOT NULL,
+  PRIMARY KEY (`type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_types`
+--
+
+LOCK TABLES `vehicle_types` WRITE;
+/*!40000 ALTER TABLE `vehicle_types` DISABLE KEYS */;
+INSERT INTO `vehicle_types` VALUES (1,'Small Van',800,5),(2,'LWB Transit',1500,12),(3,'Luton Box',3500,20),(4,'7.5T Truck',7500,35),(5,'Articulated Lorry',44000,100);
+/*!40000 ALTER TABLE `vehicle_types` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicles`
+--
+
+DROP TABLE IF EXISTS `vehicles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicles` (
+  `vehicle_id` int NOT NULL AUTO_INCREMENT,
+  `registration_plate` varchar(20) NOT NULL,
+  `type_id` int DEFAULT NULL,
+  `site_id` int DEFAULT NULL,
+  PRIMARY KEY (`vehicle_id`),
+  UNIQUE KEY `registration_plate` (`registration_plate`),
+  KEY `type_id` (`type_id`),
+  KEY `site_id` (`site_id`),
+  CONSTRAINT `vehicles_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `vehicle_types` (`type_id`) ON DELETE SET NULL,
+  CONSTRAINT `vehicles_ibfk_2` FOREIGN KEY (`site_id`) REFERENCES `sites` (`site_id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicles`
+--
+
+LOCK TABLES `vehicles` WRITE;
+/*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+INSERT INTO `vehicles` VALUES (1,'LIV-01-VAN',1,1),(2,'LON-99-TRK',4,2),(3,'MAN-55-HGV',5,3),(4,'LIV-02-LUT',3,1),(5,'BIRM-88-VAN',2,4);
+/*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-14 11:20:36
