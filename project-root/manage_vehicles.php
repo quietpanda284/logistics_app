@@ -24,7 +24,8 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
 <html>
 
 <head>
-    <title>Fleet Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Fleet Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -51,6 +52,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                             <li><a class="dropdown-item" href="account.php">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
                         </ul>
                     </li>
@@ -63,39 +65,43 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
         <div class="card bg-dark border-secondary shadow">
             <div class="card-body">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="card-title text-white">Fleet Management</h4>
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                    <h4 class="card-title text-white mb-0">Fleet Management</h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
-                        + Add New Vehicle
+                        + Add Vehicle
                     </button>
                 </div>
 
-                <table class="table table-dark table-hover">
-                    <thead>
-                        <tr class="text-muted">
-                            <th>Plate Number</th>
-                            <th>Type</th>
-                            <th>Capacity (kg)</th>
-                            <th>Max Space (m&sup3;)</th> <th>Current Location</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                            <tr>
-                                <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
-                                <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
-                                <td><?php echo $row['max_weight']; ?> kg</td>
-                                <td><?php echo $row['max_space']; ?> m&sup3;</td> <td><?php echo $row['site_name']; ?></td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="<?php echo $row['vehicle_id']; ?>">
-                                        Remove
-                                    </button>
-                                </td>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle text-nowrap">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Plate Number</th>
+                                <th>Type</th>
+                                <th>Capacity (kg)</th>
+                                <th>Max Space (m&sup3;)</th>
+                                <th>Current Location</th>
+                                <th>Action</th>
                             </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                <tr>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
+                                    <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
+                                    <td><?php echo $row['max_weight']; ?> kg</td>
+                                    <td><?php echo $row['max_space']; ?> m&sup3;</td>
+                                    <td><?php echo $row['site_name']; ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="<?php echo $row['vehicle_id']; ?>">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
         </div>

@@ -39,7 +39,7 @@ if (!isset($_SESSION['user_id'])) {
             </a>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
               <li><a class="dropdown-item" href="account.php">Profile</a></li>
-              <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
+              <li><hr class="dropdown-divider"></li> <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
             </ul>
           </li>
         </ul>
@@ -58,110 +58,105 @@ if (!isset($_SESSION['user_id'])) {
           </div>
         </form>
 
-        <table class="table table-dark table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Job ID</th>
-              <th>Goods</th>
-              <th>Route</th>
-              <th>Assigned Vehicle</th>
-              <th>Dates</th>
-              <th>Hazardous</th>
-              <th>Current Status</th>
-              <th>Update Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php
-            include 'config/db_connect.php';
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle text-nowrap">
+            <thead>
+              <tr>
+                <th>Job ID</th>
+                <th>Goods</th>
+                <th>Route</th>
+                <th>Assigned Vehicle</th>
+                <th>Dates</th>
+                <th>Hazardous</th>
+                <th>Current Status</th>
+                <th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+              include 'config/db_connect.php';
 
-            // Updated Query to include Vehicle details
-            $sql = "SELECT 
-                        j.job_id, 
-                        j.goods_name, 
-                        j.goods_quantity, 
-                        j.hazardous, 
-                        j.start_date, 
-                        j.deadline, 
-                        j.status,
-                        s1.site_name AS start_name, 
-                        s2.site_name AS end_name,
-                        v.registration_plate,
-                        vt.type_name            
-                    FROM jobs j
-                    JOIN sites s1 ON j.start_site_id = s1.site_id
-                    JOIN sites s2 ON j.end_site_id = s2.site_id
-                    LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
-                    LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id"; // Second join to get the name
+              // Updated Query to include Vehicle details
+              $sql = "SELECT 
+                          j.job_id, 
+                          j.goods_name, 
+                          j.goods_quantity, 
+                          j.hazardous, 
+                          j.start_date, 
+                          j.deadline, 
+                          j.status,
+                          s1.site_name AS start_name, 
+                          s2.site_name AS end_name,
+                          v.registration_plate,
+                          vt.type_name            
+                      FROM jobs j
+                      JOIN sites s1 ON j.start_site_id = s1.site_id
+                      JOIN sites s2 ON j.end_site_id = s2.site_id
+                      LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
+                      LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id";
 
-            if (isset($_GET['search']) && !empty($_GET['search'])) {
-              $search = $_GET['search'];
-              $sql .= " WHERE j.goods_name LIKE '%$search%'";
-            }
-
-            $result = mysqli_query($conn, $sql);
-
-            if (mysqli_num_rows($result) > 0) {
-              while ($row = mysqli_fetch_assoc($result)) {
-
-                // Formatting Logic
-                $formatted_id = sprintf("JN%03d", $row['job_id']);
-                $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
-
-                // Handle cases where vehicle might be null (old data)
-                $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
-
-                // Now we fetch 'type_name' from the joined table
-                $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
-
-                $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
-
-                echo "<tr>";
-                echo "<td>" . $formatted_id . "</td>";
-
-                echo "<td>
-                        <strong>" . $row['goods_name'] . "</strong><br>
-                        <small class='text-white-50'>Qty: " . $row['goods_quantity'] . "</small>
-                      </td>";
-
-                echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
-
-                // New Column: Vehicle with Hover Effect
-                echo "<td>
-                        <span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" .
-                  $regNo .
-                  "</span>
-                      </td>";
-
-                echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
-
-                echo "<td>" . $hazText . "</td>";
-
-                echo "<td>" . $row['status'] . "</td>";
-
-                // Action Column
-                echo "<td>
-                        <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
-                            <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
-                            <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>";
-
-                foreach ($statusOptions as $opt) {
-                  $selected = ($row['status'] == $opt) ? 'selected' : '';
-                  echo "<option value='$opt' $selected>$opt</option>";
-                }
-
-                echo "      </select>
-                            <button type='submit' class='btn btn-outline-warning btn-sm'>Update</button>
-                        </form>
-                      </td>";
-                echo "</tr>";
+              if (isset($_GET['search']) && !empty($_GET['search'])) {
+                $search = $_GET['search'];
+                $sql .= " WHERE j.goods_name LIKE '%$search%'";
               }
-            } else {
-              echo "<tr><td colspan='8' class='text-center'>No jobs found.</td></tr>";
-            }
-            ?>
-          </tbody>
-        </table>
+
+              $result = mysqli_query($conn, $sql);
+
+              if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+
+                  $formatted_id = sprintf("JN%03d", $row['job_id']);
+                  $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
+                  $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
+                  $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
+
+                  $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
+
+                  echo "<tr>";
+                  echo "<td>" . $formatted_id . "</td>";
+
+                  echo "<td>
+                          <strong>" . $row['goods_name'] . "</strong><br>
+                          <small class='text-white-50'>Qty: " . $row['goods_quantity'] . "</small>
+                        </td>";
+
+                  echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
+
+                  echo "<td>
+                          <span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" .
+                    $regNo .
+                    "</span>
+                        </td>";
+
+                  echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
+
+                  echo "<td>" . $hazText . "</td>";
+
+                  echo "<td>" . $row['status'] . "</td>";
+
+                  echo "<td>
+                          <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
+                              <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
+                              <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>";
+
+                  foreach ($statusOptions as $opt) {
+                    $selected = ($row['status'] == $opt) ? 'selected' : '';
+                    echo "<option value='$opt' $selected>$opt</option>";
+                  }
+
+                  echo "      </select>
+                              <button type='submit' class='btn btn-outline-warning btn-sm'>Update</button>
+                          </form>
+                        </td>";
+                  echo "</tr>";
+                }
+              } else {
+                echo "<tr><td colspan='8' class='text-center'>No jobs found.</td></tr>";
+              }
+              ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
