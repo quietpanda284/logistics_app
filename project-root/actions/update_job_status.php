@@ -2,6 +2,11 @@
 session_start();
 include '../config/db_connect.php';
 
+if ($current_job['status'] === 'Completed' || $current_job['status'] === 'Cancelled') {
+    header("Location: ../search_jobs.php?error=Job is frozen");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['job_id']) && isset($_POST['status'])) {
     $job_id = $_POST['job_id'];
     $status = $_POST['status'];

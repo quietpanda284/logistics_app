@@ -98,7 +98,11 @@ if (!isset($_SESSION['user_id'])) {
                                     if ($row['status'] === 'Completed') {
                                         // Frozen State
                                         echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
-                                    } else {
+                                    }
+                                    elseif ($row['status'] === 'Cancelled') {
+                                        echo "<span class='text-danger fw-bold'><i class='bi bi-check-circle-fill'></i> Cancelled</span>";
+                                    }
+                                    else {
                                         // Live Dropdown (No Form Button)
                                         echo "<select 
                                                 class='form-select form-select-sm bg-dark text-white border-secondary' 
