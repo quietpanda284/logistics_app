@@ -18,34 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.php">Logistics Co.</a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
-          <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
-          <li class="nav-item"><a class="nav-link" href="manage_vehicles.php">Manage Vehicles</a></li>
-          <li class="nav-item"><a class="nav-link active" href="jobs_report.php">Jobs Reports</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Account
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-              <li><a class="dropdown-item" href="account.php">Profile</a></li>
-              <li><a class="dropdown-item" href="actions/logout.php">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php include 'includes/navbar.php'; ?>
 
   <div class="container mt-5">
     <h2 class="mb-4">Job Status Report</h2>
