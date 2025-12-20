@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $stmt = mysqli_stmt_init($conn);
     $check_sql = "SELECT username FROM users WHERE username = ?";
-    
+
     if (mysqli_stmt_prepare($stmt, $check_sql)) {
         mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
@@ -42,8 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_stmt_init($conn);
 
     if (mysqli_stmt_prepare($stmt, $sql)) {
-        mysqli_stmt_bind_param($stmt, "ssss", $username, $password, $full_name, $role);
-        
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        mysqli_stmt_bind_param($stmt, "ssss", $username, $hashed_password, $full_name, $role);
+
         if (mysqli_stmt_execute($stmt)) {
             echo json_encode(['status' => 'success', 'message' => 'Account created successfully!']);
             exit();
@@ -56,4 +58,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
-?>
