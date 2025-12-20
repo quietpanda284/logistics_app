@@ -19,12 +19,12 @@ if (isset($_GET['id'])) {
     $sql = "DELETE FROM jobs WHERE job_id = $id";
 
     if (mysqli_query($conn, $sql)) {
-        header("Location: ../search_jobs.php"); 
+        header("Location: ../jobs_report.php"); 
     } else {
         echo "Error deleting record: " . mysqli_error($conn);
     }
 
 } else {
-    header("Location: ../search_jobs.php");
+    header("Location: ../jobs_report.php");
 }
 ?>

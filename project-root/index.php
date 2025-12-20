@@ -48,7 +48,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                     <li class="nav-item"><a class="nav-link" href="enter_job.php">Create Job</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_vehicles.php">Manage Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="search_jobs.php">Search Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="jobs_report.php">Search Jobs</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Account
@@ -86,7 +86,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
             <div class="col-md-4 mb-3">
                 <div class="card text-center p-4">
                     <h3>Search Jobs</h3>
-                    <a class="btn btn-dark mt-2" style="text-decoration: none; color: white;" href="search_jobs.php">Go</a>
+                    <a class="btn btn-dark mt-2" style="text-decoration: none; color: white;" href="jobs_report.php">Go</a>
                 </div>
             </div>
         </div>

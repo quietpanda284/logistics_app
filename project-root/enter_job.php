@@ -50,7 +50,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                     <li class="nav-item"><a class="nav-link active" href="enter_job.php">Create Job</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_sites.php">Manage Sites</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_vehicles.php">Manage Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="search_jobs.php">Search Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="jobs_report.php">Search Jobs</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Account

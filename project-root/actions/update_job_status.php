@@ -15,6 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['job_id']) && isset($_P
     }
 }
 
-header("Location: ../search_jobs.php");
+header("Location: ../jobs_report.php");
 exit();
 ?>
