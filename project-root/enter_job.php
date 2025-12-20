@@ -135,6 +135,43 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
         </div>
     </div>
 
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-success">
+                        <i class="bi bi-check-circle-fill"></i> Job Created
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <h3 class="fw-bold">Success!</h3>
+                    <p class="mb-0">Job <span class="text-info fw-bold">JN<?php echo isset($_GET['job_id']) ? sprintf("%03d", $_GET['job_id']) : '000'; ?></span> has been added.</p>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <a href="jobs_report.php" class="btn btn-outline-light">View Jobs</a>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Create Another</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+        <script>
+            // Wait for the page to fully load
+            document.addEventListener('DOMContentLoaded', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('successModal'));
+                myModal.show();
+                
+                // Clean the URL so a refresh doesn't show the modal again
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                url.searchParams.delete('job_id');
+                window.history.replaceState({}, '', url);
+            });
+            </script>
+    <?php endif; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

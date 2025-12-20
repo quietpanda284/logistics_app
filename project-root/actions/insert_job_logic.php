@@ -12,17 +12,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $size          = (int) $_POST['size'];
     $start_site_id = (int) $_POST['start_site_id'];
     $end_site_id   = (int) $_POST['end_site_id'];
-    $vehicle_id = (int) $_POST['vehicle_id'];
-    $hazardous = isset($_POST['hazardous']) ? 1 : 0;
+    $vehicle_id    = (int) $_POST['vehicle_id'];
+    $hazardous     = isset($_POST['hazardous']) ? 1 : 0;
 
     $sql = "INSERT INTO jobs (goods_name, goods_quantity, weight, size, hazardous, start_date, deadline, start_site_id, end_site_id, status, assigned_vehicle_id) 
             VALUES ('$goods_name', '$quantity', '$weight', '$size', '$hazardous', '$start_date', '$deadline', '$start_site_id', '$end_site_id', 'Outstanding', $vehicle_id)";
 
     if (mysqli_query($conn, $sql)) {
-        echo "<h1>Success!</h1><p>Redirecting...</p>";
-        header("refresh:1;url=../index.php");
+        // 1. Get the ID of the new job
+        $new_job_id = mysqli_insert_id($conn);
+        
+        // 2. Redirect back to enter_job.php with success flag and ID
+        header("Location: ../enter_job.php?status=success&job_id=" . $new_job_id);
+        exit();
     } else {
-        //UPDATE SECURITY
         echo "Error: " . mysqli_error($conn); 
     }
 
