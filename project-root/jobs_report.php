@@ -107,21 +107,30 @@ if (!isset($_SESSION['user_id'])) {
 
                   echo "<td>" . $row['status'] . "</td>";
 
-                  echo "<td>
-                          <form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
-                              <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
-                              <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>
-                              <option value='' selected>Select...</option>";
+                  // Action Column
+                  echo "<td>";
 
-                  foreach ($statusOptions as $opt) {
-                    $selected = ($row['status'] == $opt) ? 'selected' : '';
-                    echo "<option value='$opt' $selected>$opt</option>";
+                  // CHECK: Is the job already completed?
+                  if ($row['status'] === 'Completed') {
+                    // If yes, show a "Locked" message instead of the form
+                    echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
+                  } else {
+                    // If no, show the update form as usual
+                    echo "<form action='actions/update_job_status.php' method='POST' class='d-flex gap-2'>
+            <input type='hidden' name='job_id' value='" . $row['job_id'] . "'>
+            <select name='status' class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;'>";
+
+                    foreach ($statusOptions as $opt) {
+                      $selected = ($row['status'] == $opt) ? 'selected' : '';
+                      echo "<option value='$opt' $selected>$opt</option>";
+                    }
+
+                    echo "  </select>
+            <button type='submit' class='btn btn-outline-warning btn-sm'>Update</button>
+        </form>";
                   }
 
-                  echo "      </select>
-                              <button type='submit' class='btn btn-outline-warning btn-sm'>Update</button>
-                          </form>
-                        </td>";
+                  echo "</td>";
                   echo "</tr>";
                 }
               } else {
