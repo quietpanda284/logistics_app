@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// 1. Fetch Sites for Dropdowns
 $sites = [];
 $sql_sites = "SELECT * FROM sites";
 $result_sites = mysqli_query($conn, $sql_sites);
@@ -16,9 +15,8 @@ while ($row = mysqli_fetch_assoc($result_sites)) {
     $sites[] = $row;
 }
 
-// 2. Fetch Vehicles for Dropdown
 $vehicles = [];
-$sql_vehicles = "SELECT * FROM vehicles"; // Assuming your table is named 'vehicles'
+$sql_vehicles = "SELECT * FROM vehicles";
 $result_vehicles = mysqli_query($conn, $sql_vehicles);
 while ($row = mysqli_fetch_assoc($result_vehicles)) {
     $vehicles[] = $row;
