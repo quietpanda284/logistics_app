@@ -3,11 +3,11 @@ include '../config/db_connect.php';
 
 $output = '';
 
-// Check if a search term was sent
 if (isset($_POST['query'])) {
-    $search = mysqli_real_escape_string($conn, $_POST['query']);
-    
-    // The main query (Same as jobs_report.php)
+    $search = $_POST['query'];
+    $search_term = "%" . $search . "%"; // Prepare the wildcard string
+
+    // 1. Prepared Statement SQL
     $sql = "SELECT 
                 j.job_id, 
                 j.goods_name, 
@@ -25,20 +25,32 @@ if (isset($_POST['query'])) {
             JOIN sites s2 ON j.end_site_id = s2.site_id
             LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
             LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
-            WHERE j.goods_name LIKE '%$search%' 
-               OR v.registration_plate LIKE '%$search%'
-               OR j.job_id LIKE '%$search%'
-            ORDER BY j.job_id DESC"; // Added ordering for better UX
+            WHERE j.goods_name LIKE ? 
+               OR v.registration_plate LIKE ?
+               OR j.job_id LIKE ?
+            ORDER BY j.job_id DESC";
+            
+    // 2. Init and Bind
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        // "sss" means String, String, String
+        mysqli_stmt_bind_param($stmt, "sss", $search_term, $search_term, $search_term);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    } else {
+        echo "Query Error";
+        exit();
+    }
 } else {
-    $sql = "SELECT * FROM jobs WHERE 1=0"; // Return nothing if no query
+    // Return empty if no query
+    exit();
 }
-
-$result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
 
-        // Formatting Logic
+        // ... (Keep your EXACT existing HTML generation loop here) ...
+        // Nothing changes in the loop because $row data format is identical.
+        
         $formatted_id = sprintf("JN%03d", $row['job_id']);
         $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
         $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
@@ -54,15 +66,12 @@ if (mysqli_num_rows($result) > 0) {
         $output .= "<td>" . $hazText . "</td>";
         $output .= "<td>" . $row['status'] . "</td>";
 
-        // Action Column Logic (Preserving your 'frozen' status logic)
         $output .= "<td>";
-
         if ($row['status'] === 'Completed') {
             $output .= "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
         } elseif ($row['status'] === 'Cancelled') {
             $output .= "<span class='text-danger fw-bold'><i class='bi bi-x-circle-fill'></i> Cancelled</span>";
         } else {
-            // The Dropdown with triggers
             $output .= "<select 
                         class='form-select form-select-sm bg-dark text-white border-secondary' 
                         style='width: 130px;'
@@ -70,12 +79,10 @@ if (mysqli_num_rows($result) > 0) {
                         data-job-ref='" . $formatted_id . "'
                         data-prev-val='" . $row['status'] . "' 
                         onchange='triggerUpdateModal(this)'>";
-
             foreach ($statusOptions as $opt) {
                 $selected = ($row['status'] == $opt) ? 'selected' : '';
                 $output .= "<option value='$opt' $selected>$opt</option>";
             }
-
             $output .= "</select>";
         }
         $output .= "</td>";

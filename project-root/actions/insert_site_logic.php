@@ -8,16 +8,28 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    $site_name = mysqli_real_escape_string($conn, $_POST['site_name']);
-    $address = mysqli_real_escape_string($conn, $_POST['address']);
 
-    $sql = "INSERT INTO sites (site_name, address) VALUES ('$site_name', '$address')";
+    $site_name = $_POST['site_name'];
+    $address = $_POST['address'];
 
-    if (mysqli_query($conn, $sql)) {
-        header("Location: manage_sites.php"); 
+    $sql = "INSERT INTO sites (site_name, address) VALUES (?, ?)";
+
+    $stmt = mysqli_stmt_init($conn);
+
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+        
+        mysqli_stmt_bind_param($stmt, "ss", $site_name, $address);
+
+        if (mysqli_stmt_execute($stmt)) {
+            header("Location: manage_sites.php");
+            exit();
+        } else {
+            echo "Error: " . mysqli_stmt_error($stmt);
+        }
+        mysqli_stmt_close($stmt);
+
     } else {
-        echo "Error: " . mysqli_error($conn);
+        echo "SQL Error: " . mysqli_error($conn);
     }
 }
 ?>
