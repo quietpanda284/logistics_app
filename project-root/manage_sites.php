@@ -114,53 +114,79 @@ if (!isset($_SESSION['user_id'])) {
                                 </tr>
 
                                 <div class="modal fade" id="editModal_<?php echo $site_id; ?>" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content bg-dark text-white border-secondary">
-                                            <div class="modal-header border-secondary">
-                                                <h5 class="modal-title">Edit Site</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="actions/update_site_logic.php" method="POST">
-                                                    <input type="hidden" name="site_id" value="<?php echo $site_id; ?>">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-dark text-white border-secondary">
+                                        <div class="modal-header border-secondary">
+                                            <h5 class="modal-title">Edit Site</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="actions/update_site_logic.php" method="POST">
+                                                <input type="hidden" name="site_id" value="<?php echo $site_id; ?>">
 
-                                                    <div class="mb-3">
-                                                        <label>Site Name</label>
-                                                        <input type="text" name="site_name" class="form-control bg-secondary text-white" value="<?php echo $row['site_name']; ?>">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Address</label>
-                                                        <textarea name="address" class="form-control bg-secondary text-white"><?php echo $row['address']; ?></textarea>
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <label>Site Name</label>
+                                                    <input type="text" name="site_name" class="form-control bg-secondary text-white" value="<?php echo htmlspecialchars($row['site_name']); ?>">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Address</label>
+                                                    <textarea name="address" class="form-control bg-secondary text-white"><?php echo htmlspecialchars($row['address']); ?></textarea>
+                                                </div>
 
-                                                    <hr class="border-secondary">
-                                                    <h6 class="text-info">Set Required Fleet Size</h6>
+                                                <hr class="border-secondary">
+                                                <h6 class="text-info">Set Required Fleet Size</h6>
+                                                
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>Small Vans</label></div>
+                                                    <div class="col-6"><input type="number" name="target_small" class="form-control form-control-sm" value="<?php echo $row['target_small_van']; ?>"></div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>Medium Vans</label></div>
+                                                    <div class="col-6"><input type="number" name="target_medium" class="form-control form-control-sm" value="<?php echo $row['target_medium_van']; ?>"></div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-6"><label>HGVs</label></div>
+                                                    <div class="col-6"><input type="number" name="target_hgv" class="form-control form-control-sm" value="<?php echo $row['target_hgv']; ?>"></div>
+                                                </div>
 
-                                                    <div class="row mb-2">
-                                                        <div class="col-6"><label>LWB Transit</label></div>
-                                                        <div class="col-6">
-                                                            <input type="number" name="target_small" class="form-control form-control-sm" value="<?php echo $row['target_small_van']; ?>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-6"><label>Luton Box</label></div>
-                                                        <div class="col-6">
-                                                            <input type="number" name="target_medium" class="form-control form-control-sm" value="<?php echo $row['target_medium_van']; ?>">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col-6"><label>7.5T Curtainside</label></div>
-                                                        <div class="col-6">
-                                                            <input type="number" name="target_hgv" class="form-control form-control-sm" value="<?php echo $row['target_hgv']; ?>">
-                                                        </div>
-                                                    </div>
+                                                <button type="submit" class="btn btn-success w-100 mt-3">Save Changes</button>
+                                            </form>
 
-                                                    <button type="submit" class="btn btn-success w-100 mt-3">Save Changes</button>
-                                                </form>
-                                            </div>
+                                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                                <div class="text-center mt-3">
+                                                    <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteSiteModal_<?php echo $site_id; ?>">
+                                                        Delete Site
+                                                    </button>
+                                                </div>
+                                            <?php endif; ?>
+                                            
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="modal fade" id="deleteSiteModal_<?php echo $site_id; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content bg-dark text-white border-secondary">
+                                        <div class="modal-header border-secondary">
+                                            <h5 class="modal-title text-danger">Confirm Deletion</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <p>Are you sure you want to delete <strong><?php echo htmlspecialchars($row['site_name']); ?></strong>?</p>
+                                            <p class="text-danger small"><i class="bi bi-exclamation-octagon-fill"></i> This action cannot be undone.</p>
+                                        </div>
+                                        <div class="modal-footer border-secondary justify-content-center">
+                                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>">Cancel</button>
+                                            
+                                            <form action="actions/delete_sites.php" method="POST">
+                                                <input type="hidden" name="site_id" value="<?php echo $site_id; ?>">
+                                                <button type="submit" class="btn btn-danger">Yes, Delete Site</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <?php } ?>
                         </tbody>
                     </table>
