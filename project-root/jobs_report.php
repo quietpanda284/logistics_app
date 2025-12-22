@@ -1,6 +1,5 @@
 <?php
 session_start();
-include 'config/db_connect.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -27,12 +26,12 @@ if (!isset($_SESSION['user_id'])) {
 
         <div class="card bg-dark border-secondary">
             <div class="card-body">
-                <form action="" method="GET" class="mb-3">
+                <div class="mb-3">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search by goods name...">
-                        <button class="btn btn-outline-light" type="submit">Search</button>
+                        <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-search"></i></span>
+                        <input type="text" id="search_input" class="form-control bg-dark text-white border-secondary" placeholder="Start typing to search (Goods, Job ID, Plate No)...">
                     </div>
-                </form>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-dark table-hover align-middle text-nowrap">
@@ -45,85 +44,73 @@ if (!isset($_SESSION['user_id'])) {
                                 <th>Dates</th>
                                 <th>Hazardous</th>
                                 <th>Current Status</th>
-                                <th>Action</th> </tr>
+                                <th>Action</th>
+                            </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="jobs_table_body">
                             <?php
-                            $sql = "SELECT 
-                        j.job_id, 
-                        j.goods_name, 
-                        j.goods_quantity, 
-                        j.hazardous, 
-                        j.start_date, 
-                        j.deadline, 
-                        j.status,
-                        s1.site_name AS start_name, 
-                        s2.site_name AS end_name,
-                        v.registration_plate,
-                        vt.type_name            
-                    FROM jobs j
-                    JOIN sites s1 ON j.start_site_id = s1.site_id
-                    JOIN sites s2 ON j.end_site_id = s2.site_id
-                    LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
-                    LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id";
+                            // Keep the initial PHP load so the table isn't empty when you first visit
+                            include 'config/db_connect.php';
 
-                            if (isset($_GET['search']) && !empty($_GET['search'])) {
-                                $search = $_GET['search'];
-                                $sql .= " WHERE j.goods_name LIKE '%$search%'";
-                            }
+                            $sql = "SELECT 
+                                        j.job_id, 
+                                        j.goods_name, 
+                                        j.goods_quantity, 
+                                        j.hazardous, 
+                                        j.start_date, 
+                                        j.deadline, 
+                                        j.status,
+                                        s1.site_name AS start_name, 
+                                        s2.site_name AS end_name,
+                                        v.registration_plate,
+                                        vt.type_name            
+                                    FROM jobs j
+                                    JOIN sites s1 ON j.start_site_id = s1.site_id
+                                    JOIN sites s2 ON j.end_site_id = s2.site_id
+                                    LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
+                                    LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
+                                    ORDER BY j.job_id DESC"; // consistent ordering
 
                             $result = mysqli_query($conn, $sql);
-
+                            // ... (This internal PHP loop is optional if you want the page to load fast, 
+                            // ... but for simplicity, you can keep your original loop here or copy the loop logic 
+                            // ... from the fetch_jobs_results.php file so it displays all jobs on load.)
+                            
+                            // For brevity in this answer, I assume you keep your original WHILE loop here for the initial view.
                             if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
-
-                                    $formatted_id = sprintf("JN%03d", $row['job_id']);
-                                    $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
-                                    $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
-                                    $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
-                                    $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
-
-                                    echo "<tr>";
-                                    echo "<td>" . $formatted_id . "</td>";
-                                    echo "<td><strong>" . $row['goods_name'] . "</strong><br><small class='text-white-50'>Qty: " . $row['goods_quantity'] . "</small></td>";
-                                    echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
-                                    echo "<td><span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" . $regNo . "</span></td>";
-                                    echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
-                                    echo "<td>" . $hazText . "</td>";
-                                    echo "<td>" . $row['status'] . "</td>";
-
-                                    // --- NEW ACTION COLUMN LOGIC ---
-                                    echo "<td>";
-
-                                    if ($row['status'] === 'Completed') {
-                                        // Frozen State
-                                        echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
-                                    }
-                                    elseif ($row['status'] === 'Cancelled') {
-                                        echo "<span class='text-danger fw-bold'><i class='bi bi-check-circle-fill'></i> Cancelled</span>";
-                                    }
-                                    else {
-                                        // Live Dropdown (No Form Button)
-                                        echo "<select 
-                                                class='form-select form-select-sm bg-dark text-white border-secondary' 
-                                                style='width: 130px;'
-                                                data-job-id='" . $row['job_id'] . "'
-                                                data-job-ref='" . $formatted_id . "'
-                                                data-prev-val='" . $row['status'] . "' 
-                                                onchange='triggerUpdateModal(this)'>";
-
-                                        foreach ($statusOptions as $opt) {
-                                            $selected = ($row['status'] == $opt) ? 'selected' : '';
-                                            echo "<option value='$opt' $selected>$opt</option>";
-                                        }
-
-                                        echo "</select>";
-                                    }
-                                    echo "</td>";
-                                    echo "</tr>";
+                                     // ... COPY OF YOUR ORIGINAL TABLE ROW LOGIC ...
+                                     // (Make sure it matches the format in fetch_jobs_results.php)
+                                     $formatted_id = sprintf("JN%03d", $row['job_id']);
+                                     $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
+                                     $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
+                                     $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
+                                     $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
+                 
+                                     echo "<tr>";
+                                     echo "<td>" . $formatted_id . "</td>";
+                                     echo "<td><strong>" . $row['goods_name'] . "</strong><br><small class='text-white-50'>Qty: " . $row['goods_quantity'] . "</small></td>";
+                                     echo "<td>" . $row['start_name'] . " <br>⬇<br> " . $row['end_name'] . "</td>";
+                                     echo "<td><span title='Type: " . $vehType . "' style='cursor: help; text-decoration: underline dotted;'>" . $regNo . "</span></td>";
+                                     echo "<td><small>" . $row['start_date'] . " to <br>" . $row['deadline'] . "</small></td>";
+                                     echo "<td>" . $hazText . "</td>";
+                                     echo "<td>" . $row['status'] . "</td>";
+                                     echo "<td>";
+                                     if ($row['status'] === 'Completed') {
+                                         echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
+                                     } elseif ($row['status'] === 'Cancelled') {
+                                         echo "<span class='text-danger fw-bold'><i class='bi bi-x-circle-fill'></i> Cancelled</span>";
+                                     } else {
+                                         echo "<select class='form-select form-select-sm bg-dark text-white border-secondary' style='width: 130px;' data-job-id='" . $row['job_id'] . "' data-job-ref='" . $formatted_id . "' data-prev-val='" . $row['status'] . "' onchange='triggerUpdateModal(this)'>";
+                                         foreach ($statusOptions as $opt) {
+                                             $selected = ($row['status'] == $opt) ? 'selected' : '';
+                                             echo "<option value='$opt' $selected>$opt</option>";
+                                         }
+                                         echo "</select>";
+                                     }
+                                     echo "</td>";
+                                     echo "</tr>";
                                 }
-                            } else {
-                                echo "<tr><td colspan='8' class='text-center'>No jobs found.</td></tr>";
                             }
                             ?>
                         </tbody>
@@ -138,15 +125,13 @@ if (!isset($_SESSION['user_id'])) {
             <div class="modal-content bg-dark text-white border-secondary">
                 <div class="modal-header border-secondary">
                     <h5 class="modal-title">Confirm Status Update</h5>
-                    </div>
+                </div>
                 <div class="modal-body">
                     <p>Are you sure you want to update Job <strong class="text-info" id="modalJobRef"></strong>?</p>
                     <p class="mb-0">New Status: <strong class="text-warning" id="modalNewStatus"></strong></p>
-                    <p class="text-danger text-sm">This action cannot be undone.</p>
                 </div>
                 <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" onclick="cancelUpdate()">Cancel</button>
-                    
                     <form action="actions/update_job_status.php" method="POST">
                         <input type="hidden" name="job_id" id="hiddenJobId">
                         <input type="hidden" name="status" id="hiddenStatus">
@@ -158,40 +143,56 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/jquery-3.7.1.min.js"></script>
 
     <script>
+        // 2. Live Search Script
+        $(document).ready(function(){
+            $("#search_input").on("keyup", function() {
+                var searchText = $(this).val();
+                
+                // If input is not empty, perform AJAX
+                if(searchText != "") {
+                    $.ajax({
+                        url: "actions/fetch_jobs_results.php",
+                        method: "POST",
+                        data: {query: searchText},
+                        success: function(data){
+                            $("#jobs_table_body").html(data);
+                        }
+                    });
+                } else {
+                    // If empty, reload the page to show original list 
+                    // (Or you could fetch 'all' via ajax, but reload is simpler for now)
+                    location.reload(); 
+                }
+            });
+        });
+
+        // 3. Modal Logic (Existing Code)
         let currentSelectElement = null;
         const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
 
         function triggerUpdateModal(selectElement) {
-            // 1. Store the element so we can revert if cancelled
             currentSelectElement = selectElement;
-
-            // 2. Get Data
             const jobId = selectElement.getAttribute('data-job-id');
             const jobRef = selectElement.getAttribute('data-job-ref');
             const newStatus = selectElement.value;
 
-            // 3. Populate Modal
             document.getElementById('modalJobRef').textContent = jobRef;
             document.getElementById('modalNewStatus').textContent = newStatus;
-            
-            // 4. Populate Hidden Form Fields
             document.getElementById('hiddenJobId').value = jobId;
             document.getElementById('hiddenStatus').value = newStatus;
 
-            // 5. Show Modal
             statusModal.show();
         }
 
         function cancelUpdate() {
-            // 1. Revert the dropdown to its original value (stored in data-prev-val)
             if (currentSelectElement) {
                 const originalValue = currentSelectElement.getAttribute('data-prev-val');
                 currentSelectElement.value = originalValue;
             }
-            
-            // 2. Hide Modal
             statusModal.hide();
         }
     </script>
