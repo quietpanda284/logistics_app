@@ -137,15 +137,15 @@ if (!isset($_SESSION['user_id'])) {
                                                 <h6 class="text-info">Set Required Fleet Size</h6>
                                                 
                                                 <div class="row mb-2">
-                                                    <div class="col-6"><label>Small Vans</label></div>
+                                                    <div class="col-6"><label>LWB</label></div>
                                                     <div class="col-6"><input type="number" name="target_small" class="form-control form-control-sm" value="<?php echo $row['target_small_van']; ?>"></div>
                                                 </div>
                                                 <div class="row mb-2">
-                                                    <div class="col-6"><label>Medium Vans</label></div>
+                                                    <div class="col-6"><label>Luton</label></div>
                                                     <div class="col-6"><input type="number" name="target_medium" class="form-control form-control-sm" value="<?php echo $row['target_medium_van']; ?>"></div>
                                                 </div>
                                                 <div class="row mb-2">
-                                                    <div class="col-6"><label>HGVs</label></div>
+                                                    <div class="col-6"><label>Curtainside</label></div>
                                                     <div class="col-6"><input type="number" name="target_hgv" class="form-control form-control-sm" value="<?php echo $row['target_hgv']; ?>"></div>
                                                 </div>
 
