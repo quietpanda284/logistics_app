@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// 1. Updated SQL to fetch 'vt.max_space'
 $sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt.max_weight, vt.max_space 
         FROM vehicles v
         LEFT JOIN sites s ON v.site_id = s.site_id
