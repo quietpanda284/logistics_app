@@ -22,11 +22,11 @@ if (!isset($_SESSION['user_id'])) {
     <?php include 'includes/navbar.php'; ?>
 
     <div class="container mt-5">
-        <h2 class="mb-4">Job Status Report</h2>
-
+        
         <div class="card bg-dark border-secondary">
             <div class="card-body">
                 <div class="mb-3">
+                    <h4 class="card-title text-white mb-4">Job Status Report</h4>
                     <div class="input-group">
                         <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-search"></i></span>
                         <input type="text" id="search_input" class="form-control bg-dark text-white border-secondary" placeholder="Start typing to search (Goods, Job ID, Plate No)...">
