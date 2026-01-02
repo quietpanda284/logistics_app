@@ -116,7 +116,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                     echo "<td>" . $row['status'] . "</td>";
                                     echo "<td>";
                                     if ($row['status'] === 'Completed') {
-                                        echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
+                                        echo "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Completed</span>";
                                     } elseif ($row['status'] === 'Cancelled') {
                                         echo "<span class='text-danger fw-bold'><i class='bi bi-x-circle-fill'></i> Cancelled</span>";
                                     } else {

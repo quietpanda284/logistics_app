@@ -63,7 +63,7 @@ if (mysqli_num_rows($result) > 0) {
 
         $output .= "<td>";
         if ($row['status'] === 'Completed') {
-            $output .= "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
+            $output .= "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Completed</span>";
         } elseif ($row['status'] === 'Cancelled') {
             $output .= "<span class='text-danger fw-bold'><i class='bi bi-x-circle-fill'></i> Cancelled</span>";
         } else {
