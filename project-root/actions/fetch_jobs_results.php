@@ -5,9 +5,8 @@ $output = '';
 
 if (isset($_POST['query'])) {
     $search = $_POST['query'];
-    $search_term = "%" . $search . "%"; // Prepare the wildcard string
+    $search_term = "%" . $search . "%";
 
-    // 1. Prepared Statement SQL
     $sql = "SELECT 
                 j.job_id, 
                 j.goods_name, 
@@ -41,15 +40,11 @@ if (isset($_POST['query'])) {
         exit();
     }
 } else {
-    // Return empty if no query
     exit();
 }
 
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
-
-        // ... (Keep your EXACT existing HTML generation loop here) ...
-        // Nothing changes in the loop because $row data format is identical.
         
         $formatted_id = sprintf("JN%03d", $row['job_id']);
         $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
