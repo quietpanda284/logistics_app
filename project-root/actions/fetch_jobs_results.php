@@ -3,43 +3,65 @@ include '../config/db_connect.php';
 
 $output = '';
 
-if (isset($_POST['query'])) {
-    $search = $_POST['query'];
-    $search_term = "%" . $search . "%";
+// Default values
+$search_term = "%%"; 
+$sort_option = $_POST['sort'] ?? 'newest';
 
-    $sql = "SELECT 
-                j.job_id, 
-                j.goods_name, 
-                j.goods_quantity, 
-                j.hazardous, 
-                j.start_date, 
-                j.deadline, 
-                j.status,
-                s1.site_name AS start_name, 
-                s2.site_name AS end_name,
-                v.registration_plate,
-                vt.type_name            
-            FROM jobs j
-            JOIN sites s1 ON j.start_site_id = s1.site_id
-            JOIN sites s2 ON j.end_site_id = s2.site_id
-            LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
-            LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
-            WHERE j.goods_name LIKE ? 
-               OR v.registration_plate LIKE ?
-               OR j.job_id LIKE ?
-            ORDER BY j.job_id DESC";
-            
-    // 2. Init and Bind
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        // "sss" means String, String, String
-        mysqli_stmt_bind_param($stmt, "sss", $search_term, $search_term, $search_term);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-    } else {
-        echo "Query Error";
-        exit();
-    }
+// Handle Search
+if (isset($_POST['query']) && $_POST['query'] !== '') {
+    $search_term = "%" . $_POST['query'] . "%";
+}
+
+// Handle Sort
+$order_sql = "ORDER BY j.job_id DESC"; // Default
+switch ($sort_option) {
+    case 'oldest':
+        $order_sql = "ORDER BY j.job_id ASC";
+        break;
+    case 'deadline':
+        $order_sql = "ORDER BY j.deadline ASC";
+        break;
+    case 'status':
+        $order_sql = "ORDER BY j.status ASC";
+        break;
+    case 'goods':
+        $order_sql = "ORDER BY j.goods_name ASC";
+        break;
+    case 'newest':
+    default:
+        $order_sql = "ORDER BY j.job_id DESC";
+        break;
+}
+
+// Build Query
+$sql = "SELECT 
+            j.job_id, 
+            j.goods_name, 
+            j.goods_quantity, 
+            j.hazardous, 
+            j.start_date, 
+            j.deadline, 
+            j.status,
+            s1.site_name AS start_name, 
+            s2.site_name AS end_name,
+            v.registration_plate,
+            vt.type_name            
+        FROM jobs j
+        JOIN sites s1 ON j.start_site_id = s1.site_id
+        JOIN sites s2 ON j.end_site_id = s2.site_id
+        LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
+        LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
+        WHERE (j.goods_name LIKE ? 
+           OR v.registration_plate LIKE ?
+           OR j.job_id LIKE ?)
+        " . $order_sql; // Append the dynamic Order By clause
+
+if ($stmt = mysqli_prepare($conn, $sql)) {
+    mysqli_stmt_bind_param($stmt, "sss", $search_term, $search_term, $search_term);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 } else {
+    echo "Query Error";
     exit();
 }
 
@@ -63,7 +85,7 @@ if (mysqli_num_rows($result) > 0) {
 
         $output .= "<td>";
         if ($row['status'] === 'Completed') {
-            $output .= "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Completed</span>";
+            $output .= "<span class='text-success fw-bold'><i class='bi bi-check-circle-fill'></i> Finalized</span>";
         } elseif ($row['status'] === 'Cancelled') {
             $output .= "<span class='text-danger fw-bold'><i class='bi bi-x-circle-fill'></i> Cancelled</span>";
         } else {
