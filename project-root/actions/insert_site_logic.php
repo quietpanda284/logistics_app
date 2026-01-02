@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_bind_param($stmt, "ss", $site_name, $address);
 
         if (mysqli_stmt_execute($stmt)) {
-            header("Location: manage_sites.php");
+            header("Location: ../manage_sites.php");
             exit();
         } else {
             echo "Error: " . mysqli_stmt_error($stmt);

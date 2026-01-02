@@ -155,7 +155,7 @@ if (!isset($_SESSION['user_id'])) {
                                             
                                             <form action="actions/delete_sites.php" method="POST">
                                                 <input type="hidden" name="site_id" value="<?php echo $site_id; ?>">
-                                                <button type="submit" class="btn btn-danger">Yes, Delete Site</button>
+                                                <button type="submit" class="btn btn-danger">Delete Site</button>
                                             </form>
                                         </div>
                                     </div>

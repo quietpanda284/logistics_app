@@ -16,6 +16,12 @@ if (!isset($_SESSION['user_id'])) {
     <title>Job Status Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        #search_input::placeholder {
+            color: #adb5bd !important;
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
