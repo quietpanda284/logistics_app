@@ -70,9 +70,9 @@ if (!isset($_SESSION['user_id'])) {
                         <tbody>
                             <?php
                             $sql = "SELECT s.*, 
-                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 1) as actual_small,
-                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 2) as actual_medium,
-                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 3) as actual_hgv
+                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 1) as lwb,
+                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 2) as luton,
+                            (SELECT COUNT(*) FROM vehicles v WHERE v.site_id = s.site_id AND v.type_id = 3) as curtainside
                             FROM sites s";
 
                             $result = mysqli_query($conn, $sql);
@@ -85,15 +85,15 @@ if (!isset($_SESSION['user_id'])) {
                                     <td><?php echo htmlspecialchars($row['address']); ?></td>
                                     
                                     <td class="text-center">
-                                        <p><?php echo $row['actual_small']; ?></p>
+                                        <p><?php echo $row['lwb']; ?></p>
                                     </td>
 
                                     <td class="text-center">
-                                        <p><?php echo $row['actual_medium']; ?></p>
+                                        <p><?php echo $row['luton']; ?></p>
                                     </td>
 
                                     <td class="text-center">
-                                        <p><?php echo $row['actual_hgv']; ?></p>
+                                        <p><?php echo $row['curtainside']; ?></p>
                                     </td>
 
                                     <td>
