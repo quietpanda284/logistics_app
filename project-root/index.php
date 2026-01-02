@@ -32,7 +32,15 @@ while ($row = mysqli_fetch_assoc($result)) {
 }
 
 $vehicles = [];
-$sql_vehicles = "SELECT * FROM vehicles"; // Assuming your table is named 'vehicles'
+
+$sql_vehicles = "SELECT v.* FROM vehicles v
+                 WHERE v.vehicle_id NOT IN (
+                     SELECT j.assigned_vehicle_id 
+                     FROM jobs j 
+                     WHERE j.status IN ('Outstanding', 'In Progress') 
+                     AND j.assigned_vehicle_id IS NOT NULL
+                 )";
+
 $result_vehicles = mysqli_query($conn, $sql_vehicles);
 while ($row = mysqli_fetch_assoc($result_vehicles)) {
     $vehicles[] = $row;

@@ -16,7 +16,16 @@ while ($row = mysqli_fetch_assoc($result_sites)) {
 }
 
 $vehicles = [];
-$sql_vehicles = "SELECT * FROM vehicles";
+
+// NEW LOGIC: Select vehicles that are NOT currently assigned to an active job
+$sql_vehicles = "SELECT v.* FROM vehicles v
+                 WHERE v.vehicle_id NOT IN (
+                     SELECT j.assigned_vehicle_id 
+                     FROM jobs j 
+                     WHERE j.status IN ('Outstanding', 'In Progress') 
+                     AND j.assigned_vehicle_id IS NOT NULL
+                 )";
+
 $result_vehicles = mysqli_query($conn, $sql_vehicles);
 while ($row = mysqli_fetch_assoc($result_vehicles)) {
     $vehicles[] = $row;
