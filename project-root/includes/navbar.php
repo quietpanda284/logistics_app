@@ -17,15 +17,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link <?php echo ($current_page == 'manage_sites.php') ? 'active' : ''; ?>" href="manage_sites.php">Manage Sites</a>
+                    <a class="nav-link <?php echo ($current_page == 'manage_sites.php') ? 'active' : ''; ?>" href="manage_sites.php">Sites</a>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link <?php echo ($current_page == 'manage_vehicles.php') ? 'active' : ''; ?>" href="manage_vehicles.php">Manage Vehicles</a>
+                    <a class="nav-link <?php echo ($current_page == 'manage_vehicles.php') ? 'active' : ''; ?>" href="manage_vehicles.php">Vehicles</a>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link <?php echo ($current_page == 'jobs_report.php') ? 'active' : ''; ?>" href="jobs_report.php">Jobs Report</a>
+                    <a class="nav-link <?php echo ($current_page == 'jobs_report.php') ? 'active' : ''; ?>" href="jobs_report.php">Jobs</a>
                 </li>
                 
                 <li class="nav-item dropdown">

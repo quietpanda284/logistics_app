@@ -52,7 +52,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                                 <th>Type</th>
                                 <th>Capacity (kg)</th>
                                 <th>Max Space (m&sup3;)</th>
-                                <th>Current Location</th>
+                                <th>Home Site</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
