@@ -61,7 +61,9 @@ if (!isset($_SESSION['user_id'])) {
                             <tr>
                                 <th>Site Name</th>
                                 <th>Address</th>
-                                <th>Fleet Status (Target vs Actual)</th>
+                                <th class="text-center">LWB</th>
+                                <th class="text-center">Luton</th>
+                                <th class="text-center">Curtainside</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -81,31 +83,19 @@ if (!isset($_SESSION['user_id'])) {
                                 <tr>
                                     <td><?php echo htmlspecialchars($row['site_name']); ?></td>
                                     <td><?php echo htmlspecialchars($row['address']); ?></td>
-                                    <td>
-                                        <div class="row align-items-center mb-1" style="min-width: 250px;">
-                                            <div class="col-4 text-white small">LWB</div>
-                                            <div class="col-8">
-                                                <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_small_van']; ?></span>
-                                                <span class="badge bg-primary text-white">Act: <?php echo $row['actual_small']; ?></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row align-items-center mb-1" style="min-width: 250px;">
-                                            <div class="col-4 text-white small">Luton</div>
-                                            <div class="col-8">
-                                                <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_medium_van']; ?></span>
-                                                <span class="badge bg-info text-dark">Act: <?php echo $row['actual_medium']; ?></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row align-items-center" style="min-width: 250px;">
-                                            <div class="col-4 text-white small">Curtainside</div>
-                                            <div class="col-8">
-                                                <span class="badge border border-secondary text-secondary">Tg: <?php echo $row['target_hgv']; ?></span>
-                                                <span class="badge bg-warning text-dark">Act: <?php echo $row['actual_hgv']; ?></span>
-                                            </div>
-                                        </div>
+                                    
+                                    <td class="text-center">
+                                        <p><?php echo $row['actual_small']; ?></p>
                                     </td>
+
+                                    <td class="text-center">
+                                        <p><?php echo $row['actual_medium']; ?></p>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <p><?php echo $row['actual_hgv']; ?></p>
+                                    </td>
+
                                     <td>
                                         <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>">
                                             Edit
@@ -131,22 +121,6 @@ if (!isset($_SESSION['user_id'])) {
                                                 <div class="mb-3">
                                                     <label>Address</label>
                                                     <textarea name="address" class="form-control bg-secondary text-white"><?php echo htmlspecialchars($row['address']); ?></textarea>
-                                                </div>
-
-                                                <hr class="border-secondary">
-                                                <h6 class="text-info">Set Required Fleet Size</h6>
-                                                
-                                                <div class="row mb-2">
-                                                    <div class="col-6"><label>LWB</label></div>
-                                                    <div class="col-6"><input type="number" name="target_small" class="form-control form-control-sm" value="<?php echo $row['target_small_van']; ?>"></div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-6"><label>Luton</label></div>
-                                                    <div class="col-6"><input type="number" name="target_medium" class="form-control form-control-sm" value="<?php echo $row['target_medium_van']; ?>"></div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-6"><label>Curtainside</label></div>
-                                                    <div class="col-6"><input type="number" name="target_hgv" class="form-control form-control-sm" value="<?php echo $row['target_hgv']; ?>"></div>
                                                 </div>
 
                                                 <button type="submit" class="btn btn-success w-100 mt-3">Save Changes</button>
