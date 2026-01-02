@@ -40,7 +40,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
                     <h4 class="card-title text-white mb-0">Fleet Management</h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
-                        + Add Vehicle
+                        + Add New Vehicle
                     </button>
                 </div>
 

@@ -17,10 +17,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link <?php echo ($current_page == 'enter_job.php') ? 'active' : ''; ?>" href="enter_job.php">Create Job</a>
-                </li>
-                
-                <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'manage_sites.php') ? 'active' : ''; ?>" href="manage_sites.php">Manage Sites</a>
                 </li>
                 

@@ -51,10 +51,9 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
 
 <body>
     <?php include 'includes/navbar.php'; ?>
-
+    
     <div class="container text-center mt-5">
-        <h3 class='me-2'>Welcome, <?php echo htmlspecialchars($user['full_name']); ?></h3>
-        <p>Select an option below to manage logistics operations:</p>
+        <h3 class="pb-4">Welcome, <?php echo htmlspecialchars($user['full_name']); ?></h3>
 
         <div class="row mt-4">
             <div class="col-md-4 mb-3">

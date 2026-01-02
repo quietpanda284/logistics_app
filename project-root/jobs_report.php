@@ -1,9 +1,25 @@
 <?php
 session_start();
+include 'config/db_connect.php'; // Moved to top for global access
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
+}
+
+// FETCH DATA FOR THE "ADD JOB" MODAL DROPDOWNS
+$sites = [];
+$sql_sites = "SELECT * FROM sites";
+$result_sites = mysqli_query($conn, $sql_sites);
+while ($row = mysqli_fetch_assoc($result_sites)) {
+    $sites[] = $row;
+}
+
+$vehicles = [];
+$sql_vehicles = "SELECT * FROM vehicles";
+$result_vehicles = mysqli_query($conn, $sql_vehicles);
+while ($row = mysqli_fetch_assoc($result_vehicles)) {
+    $vehicles[] = $row;
 }
 ?>
 
@@ -31,8 +47,14 @@ if (!isset($_SESSION['user_id'])) {
         
         <div class="card bg-dark border-secondary">
             <div class="card-body">
+                <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <h4 class="card-title text-white mb-0">Job Status Report</h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJobModal">
+                        <i class="bi bi-plus-lg"></i> Add New Job
+                    </button>
+                </div>
+
                 <div class="mb-3">
-                    <h4 class="card-title text-white mb-4">Job Status Report</h4>
                     <div class="input-group">
                         <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-search"></i></span>
                         <input type="text" id="search_input" class="form-control bg-dark text-white border-secondary" placeholder="Start typing to search (Goods, Job ID, Plate No)...">
@@ -55,8 +77,7 @@ if (!isset($_SESSION['user_id'])) {
                         </thead>
                         <tbody id="jobs_table_body">
                             <?php
-                            include 'config/db_connect.php';
-
+                            // SQL query remains the same
                             $sql = "SELECT 
                                     j.job_id, 
                                     j.goods_name, 
@@ -118,6 +139,102 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </div>
 
+    <div class="modal fade" id="addJobModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Create New Job</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="actions/insert_job_logic.php" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Goods Name</label>
+                                <input type="text" name="goods_name" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Goods Quantity</label>
+                                <input type="number" name="goods_quantity" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" name="weight" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Size (m³)</label>
+                                <input type="number" name="size" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Assign Vehicle</label>
+                                <select name="vehicle_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Vehicle...</option>
+                                    <?php
+                                    foreach ($vehicles as $vehicle) {
+                                        echo "<option value='" . $vehicle['vehicle_id'] . "'>" . $vehicle['registration_plate'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6 pt-4">
+                                <div class="form-check">
+                                    <input type="checkbox" name="hazardous" class="form-check-input" id="hazCheck">
+                                    <label class="form-check-label text-warning" for="hazCheck">Hazardous Cargo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Location</label>
+                                <select name="start_site_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Origin Site...</option>
+                                    <?php
+                                    foreach ($sites as $site) {
+                                        echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Location</label>
+                                <select name="end_site_id" class="form-select bg-secondary text-white border-0" required>
+                                    <option value="" selected disabled>Select Destination...</option>
+                                    <?php
+                                    foreach ($sites as $site) {
+                                        echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="start_date" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Deadline</label>
+                                <input type="date" name="deadline" class="form-control bg-secondary text-white border-0" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-2">
+                            <button type="submit" class="btn btn-primary">Submit Job</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-white border-secondary">
@@ -144,17 +261,13 @@ if (!isset($_SESSION['user_id'])) {
     <script src="js/jquery-3.7.1.min.js"></script>
 
     <script>
-        // 1. Refactored Search Logic into a function we can reuse
+        // 1. Search Logic
         function loadJobs() {
             var searchText = $("#search_input").val();
-            
-            // We can send empty string if searchText is empty, the php handles it
             $.ajax({
                 url: "actions/fetch_jobs_results.php",
                 method: "POST",
-                data: {
-                    query: searchText
-                },
+                data: { query: searchText },
                 success: function(data) {
                     $("#jobs_table_body").html(data);
                 }
@@ -162,13 +275,12 @@ if (!isset($_SESSION['user_id'])) {
         }
 
         $(document).ready(function() {
-            // Bind search input to the loader
             $("#search_input").on("keyup", function() {
                 loadJobs();
             });
         });
 
-        // 2. Modal Logic
+        // 2. Status Modal Logic
         let currentSelectElement = null;
         const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
 
@@ -194,7 +306,7 @@ if (!isset($_SESSION['user_id'])) {
             statusModal.hide();
         }
 
-        // 3. New AJAX Update Function
+        // 3. AJAX Update Function
         function confirmUpdateAjax() {
             const jobId = document.getElementById('hiddenJobId').value;
             const status = document.getElementById('hiddenStatus').value;
@@ -202,24 +314,19 @@ if (!isset($_SESSION['user_id'])) {
             $.ajax({
                 url: "actions/update_job_status.php",
                 method: "POST",
-                dataType: "json", // We expect JSON back from the PHP
+                dataType: "json",
                 data: {
                     job_id: jobId,
                     status: status
                 },
                 success: function(response) {
                     if (response.status === 'success') {
-                        // Close modal
                         statusModal.hide();
-                        
-                        // REFRESH the table immediately to show the new state (e.g. if Completed, it becomes text)
                         loadJobs(); 
-                        
-                        // Optional: clear the tracking variable
                         currentSelectElement = null;
                     } else {
                         alert("Error: " + response.message);
-                        cancelUpdate(); // Revert the dropdown
+                        cancelUpdate();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -231,5 +338,4 @@ if (!isset($_SESSION['user_id'])) {
         }
     </script>
 </body>
-
 </html>

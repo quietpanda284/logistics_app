@@ -27,7 +27,7 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                     <h4 class="text-white mb-0">Manage Sites</h4>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSiteModal">
-                        + Add Site
+                        + Add New Site
                     </button>
                 </div>
 
