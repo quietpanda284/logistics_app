@@ -8,6 +8,22 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Fetch user details from database
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT username, full_name, role FROM users WHERE user_id = ?";
+$stmt = mysqli_stmt_init($conn);
+
+if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+} else {
+    echo "Database error";
+    exit();
+}
+
+
 $sites = [];
 $sql = "SELECT * FROM sites";
 $result = mysqli_query($conn, $sql);
@@ -37,7 +53,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
     <?php include 'includes/navbar.php'; ?>
 
     <div class="container text-center mt-5">
-        <h2>Welcome, User</h2>
+        <h3 class='me-2'>Welcome, <?php echo htmlspecialchars($user['full_name']); ?></h3>
         <p>Select an option below to manage logistics operations:</p>
 
         <div class="row mt-4">
