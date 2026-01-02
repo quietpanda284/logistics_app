@@ -55,7 +55,7 @@ if (mysqli_num_rows($result) > 0) {
         $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
         $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
         $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
-        $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
+        $statusOptions = ['Outstanding', 'In Progress', 'Completed', 'Cancelled'];
 
         $output .= "<tr>";
         $output .= "<td>" . $formatted_id . "</td>";

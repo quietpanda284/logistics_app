@@ -2,8 +2,10 @@
 session_start();
 include '../config/db_connect.php';
 
-if ($current_job['status'] === 'Completed' || $current_job['status'] === 'Cancelled') {
-    header("Location: ../search_jobs.php?error=Job is frozen");
+header('Content-Type: application/json');
+
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
 
@@ -15,11 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['job_id']) && isset($_P
     
     if ($stmt = mysqli_prepare($conn, $sql)) {
         mysqli_stmt_bind_param($stmt, "si", $status, $job_id);
-        mysqli_stmt_execute($stmt);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            // Success! Send JSON back
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Database update failed']);
+        }
         mysqli_stmt_close($stmt);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Query preparation failed']);
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
 }
-
-header("Location: ../jobs_report.php");
 exit();
 ?>

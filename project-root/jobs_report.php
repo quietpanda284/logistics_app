@@ -52,23 +52,23 @@ if (!isset($_SESSION['user_id'])) {
                             include 'config/db_connect.php';
 
                             $sql = "SELECT 
-                                        j.job_id, 
-                                        j.goods_name, 
-                                        j.goods_quantity, 
-                                        j.hazardous, 
-                                        j.start_date, 
-                                        j.deadline, 
-                                        j.status,
-                                        s1.site_name AS start_name, 
-                                        s2.site_name AS end_name,
-                                        v.registration_plate,
-                                        vt.type_name            
-                                    FROM jobs j
-                                    JOIN sites s1 ON j.start_site_id = s1.site_id
-                                    JOIN sites s2 ON j.end_site_id = s2.site_id
-                                    LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
-                                    LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
-                                    ORDER BY j.job_id DESC";
+                                    j.job_id, 
+                                    j.goods_name, 
+                                    j.goods_quantity, 
+                                    j.hazardous, 
+                                    j.start_date, 
+                                    j.deadline, 
+                                    j.status,
+                                    s1.site_name AS start_name, 
+                                    s2.site_name AS end_name,
+                                    v.registration_plate,
+                                    vt.type_name            
+                                FROM jobs j
+                                JOIN sites s1 ON j.start_site_id = s1.site_id
+                                JOIN sites s2 ON j.end_site_id = s2.site_id
+                                LEFT JOIN vehicles v ON j.assigned_vehicle_id = v.vehicle_id
+                                LEFT JOIN vehicle_types vt ON v.type_id = vt.type_id
+                                ORDER BY j.job_id DESC";
 
                             $result = mysqli_query($conn, $sql);
                             if (mysqli_num_rows($result) > 0) {
@@ -77,7 +77,7 @@ if (!isset($_SESSION['user_id'])) {
                                     $hazText = ($row['hazardous'] == 1) ? "<span class='badge bg-danger'>HAZ</span>" : "<span class='badge bg-success'>SAFE</span>";
                                     $regNo = $row['registration_plate'] ? $row['registration_plate'] : "Unassigned";
                                     $vehType = $row['type_name'] ? $row['type_name'] : "N/A";
-                                    $statusOptions = ['Outstanding', 'Completed', 'Cancelled'];
+                                    $statusOptions = ['Outstanding', 'In Progress', 'Completed', 'Cancelled'];
 
                                     echo "<tr>";
                                     echo "<td>" . $formatted_id . "</td>";
@@ -124,52 +124,45 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
                 <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" onclick="cancelUpdate()">Cancel</button>
-                    <form action="actions/update_job_status.php" method="POST">
-                        <input type="hidden" name="job_id" id="hiddenJobId">
-                        <input type="hidden" name="status" id="hiddenStatus">
-                        <button type="submit" class="btn btn-success">Confirm Update</button>
-                    </form>
+                    
+                    <input type="hidden" id="hiddenJobId">
+                    <input type="hidden" id="hiddenStatus">
+                    
+                    <button type="button" class="btn btn-success" onclick="confirmUpdateAjax()">Confirm Update</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="js/jquery-3.7.1.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $("#search_input").on("keyup", function() {
-                var searchText = $(this).val();
-
-                if (searchText != "") {
-                    $.ajax({
-                        url: "actions/fetch_jobs_results.php",
-                        method: "POST",
-                        data: {
-                            query: searchText
-                        },
-                        success: function(data) {
-                            $("#jobs_table_body").html(data);
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: "actions/fetch_jobs_results.php",
-                        method: "POST",
-                        data: {
-                            query: ""
-                        },
-                        success: function(data) {
-                            $("#jobs_table_body").html(data);
-                        }
-                    });
+        // 1. Refactored Search Logic into a function we can reuse
+        function loadJobs() {
+            var searchText = $("#search_input").val();
+            
+            // We can send empty string if searchText is empty, the php handles it
+            $.ajax({
+                url: "actions/fetch_jobs_results.php",
+                method: "POST",
+                data: {
+                    query: searchText
+                },
+                success: function(data) {
+                    $("#jobs_table_body").html(data);
                 }
+            });
+        }
+
+        $(document).ready(function() {
+            // Bind search input to the loader
+            $("#search_input").on("keyup", function() {
+                loadJobs();
             });
         });
 
-        // 3. Modal Logic (Existing Code)
+        // 2. Modal Logic
         let currentSelectElement = null;
         const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
 
@@ -193,6 +186,42 @@ if (!isset($_SESSION['user_id'])) {
                 currentSelectElement.value = originalValue;
             }
             statusModal.hide();
+        }
+
+        // 3. New AJAX Update Function
+        function confirmUpdateAjax() {
+            const jobId = document.getElementById('hiddenJobId').value;
+            const status = document.getElementById('hiddenStatus').value;
+
+            $.ajax({
+                url: "actions/update_job_status.php",
+                method: "POST",
+                dataType: "json", // We expect JSON back from the PHP
+                data: {
+                    job_id: jobId,
+                    status: status
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        // Close modal
+                        statusModal.hide();
+                        
+                        // REFRESH the table immediately to show the new state (e.g. if Completed, it becomes text)
+                        loadJobs(); 
+                        
+                        // Optional: clear the tracking variable
+                        currentSelectElement = null;
+                    } else {
+                        alert("Error: " + response.message);
+                        cancelUpdate(); // Revert the dropdown
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    alert("System error occurred. Please try again.");
+                    cancelUpdate();
+                }
+            });
         }
     </script>
 </body>
