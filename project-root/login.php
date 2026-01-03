@@ -37,7 +37,7 @@
             
             <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
                 
-                <div class="login-card">
+                <div class="login-card border-secondary">
                     <h2 class="text-center mb-4">Logistics Co.</h2>
 
                     <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>

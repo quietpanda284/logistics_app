@@ -165,9 +165,9 @@ if (!isset($_SESSION['user_id'])) {
                         <h5 class="modal-title text-danger">Confirm Deletion</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>"></button>
                     </div>
-                    <div class="modal-body text-center">
+                    <div class="modal-body">
                         <p>Are you sure you want to delete <strong><?php echo htmlspecialchars($row['site_name']); ?></strong>?</p>
-                        <p class="text-danger small"><i class="bi bi-exclamation-octagon-fill"></i> This action cannot be undone.</p>
+                        <span class="text-danger small">This action cannot be undone.</span>
                     </div>
                     <div class="modal-footer border-secondary justify-content-center">
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal_<?php echo $site_id; ?>">Cancel</button>
