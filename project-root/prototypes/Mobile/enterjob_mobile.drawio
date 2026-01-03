@@ -1,0 +1,103 @@
+<mxfile host="65bd71144e">
+    <diagram id="3YZh6GAuCFuGPNkfA0eo" name="Page-1">
+        <mxGraphModel dx="1222" dy="732" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="80" width="280" height="770" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Create New Job" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontStyle=1" vertex="1" parent="1">
+                    <mxGeometry x="285" y="90" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="line;strokeWidth=1;html=1;opacity=50;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="120" width="280" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Goods Name" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="285" y="130" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="160" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Goods Quantity" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="200" width="110" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="230" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Weight (kg)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="285" y="270" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="300" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="Assign Vehicle" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="284" y="410" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="440" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="Start Location" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="281" y="510" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="540" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="End Location" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="284" y="580" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="610" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="Start Date" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="281" y="650" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="680" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="Deadline" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="283" y="723" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="753" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="370" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="Size (m&lt;span style=&quot;color: rgb(63, 63, 63);&quot;&gt;³)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="283" y="340" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="" style="line;strokeWidth=1;html=1;opacity=50;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="800" width="280" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="Close" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="391.5" y="815" width="57" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="Submit Job" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="460" y="815" width="90" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="490" width="11" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="Hazardous Cargo" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="480" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=1;shape=mxgraph.ios7.misc.down;strokeColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="452" width="12" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=1;shape=mxgraph.ios7.misc.down;strokeColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="622" width="12" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=1;shape=mxgraph.ios7.misc.down;strokeColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="552" width="12" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#000000;shape=mxgraph.mscae.enterprise.calendar" vertex="1" parent="1">
+                    <mxGeometry x="520" y="690" width="12.2" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="" style="sketch=0;aspect=fixed;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fillColor=#000000;shape=mxgraph.mscae.enterprise.calendar" vertex="1" parent="1">
+                    <mxGeometry x="520" y="763" width="12.2" height="10" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
