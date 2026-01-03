@@ -34,7 +34,11 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control border-secondary" required>
+                            <input type="password" name="password" id="passInput" class="form-control border-secondary" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" name="confirm_password" id="confPassInput" class="form-control border-secondary" required>
                         </div>
 
                         <hr class="border-secondary my-4">
@@ -67,6 +71,14 @@
     $(document).ready(function() {
         $('#ajaxRegisterForm').submit(function(e) {
             e.preventDefault();
+
+            var pass = $('#passInput').val();
+            var conf = $('#confPassInput').val();
+
+            if (pass !== conf) {
+                $('#alertBox').removeClass('d-none').text('Passwords do not match.');
+                return;
+            }
             
             var btn = $('#regBtn');
             btn.prop('disabled', true).text('Creating...');

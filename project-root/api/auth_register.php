@@ -12,8 +12,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $full_name = $_POST['full_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    if ($secret_code !== "LOGISTICS_SECURE_2025") {
+    if ($password !== $confirm_password) {
+        echo json_encode(['status' => 'error', 'message' => 'Passwords do not match.']);
+        exit();
+    }
+
+    if ($secret_code !== "LOGISTICS_SECURE_2026") {
         echo json_encode(['status' => 'error', 'message' => 'Invalid Company Access Code!']);
         exit();
     }
