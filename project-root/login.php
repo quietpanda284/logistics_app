@@ -45,12 +45,12 @@
                     <form method="POST" action="" id="ajaxLoginForm">
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control border" required>
+                            <input type="text" name="username" class="form-control border-secondary" required>
                         </div>
                         
                         <div class="mb-4">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control border" required>
+                            <input type="password" name="password" class="form-control border-secondary" required>
                         </div>
                         
                         <div class="d-grid">
