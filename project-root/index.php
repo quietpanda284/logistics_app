@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Fetch user details from database
+// 1. Fetch User Details
 $user_id = $_SESSION['user_id'];
 $sql = "SELECT username, full_name, role FROM users WHERE user_id = ?";
 $stmt = mysqli_stmt_init($conn);
@@ -23,7 +23,23 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     exit();
 }
 
+// 2. NEW: Fetch Job Statistics for the Dashboard
+$stats = [
+    'Outstanding' => 0,
+    'In Progress' => 0,
+    'Completed'   => 0,
+    'Cancelled'   => 0
+];
 
+$sql_stats = "SELECT status, COUNT(*) as count FROM jobs 
+              WHERE start_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) 
+              GROUP BY status";
+$result_stats = mysqli_query($conn, $sql_stats);
+while ($row = mysqli_fetch_assoc($result_stats)) {
+    $stats[$row['status']] = $row['count'];
+}
+
+// 3. Fetch Sites (For Modal)
 $sites = [];
 $sql = "SELECT * FROM sites";
 $result = mysqli_query($conn, $sql);
@@ -31,8 +47,8 @@ while ($row = mysqli_fetch_assoc($result)) {
     $sites[] = $row;
 }
 
+// 4. Fetch Available Vehicles (For Modal)
 $vehicles = [];
-
 $sql_vehicles = "SELECT v.* FROM vehicles v
                  WHERE v.vehicle_id NOT IN (
                      SELECT j.assigned_vehicle_id 
@@ -55,34 +71,117 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Co. Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Interactive Hover Effect for Cards */
+        .action-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+            border-color: #0d6efd !important;
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'includes/navbar.php'; ?>
     
-    <div class="container text-center mt-5">
-        <h3 class="pb-4">Welcome, <?php echo htmlspecialchars($user['full_name']); ?></h3>
+    <div class="container mt-5 mb-5">
+        <div class="text-center mb-5">
+            <h3 class="fw-bold">Welcome, <span class="text-primary"><?php echo htmlspecialchars($user['full_name']); ?></span></h3>
+            <p class="text-muted">Here is your fleet overview for <strong>the last 30 days</strong>.</p>
+        </div>
 
-        <div class="row mt-4">
-            <div class="col-md-4 mb-3">
-                <div class="card text-center p-4">
-                    <h3>Enter New Job</h3>
-                    <button type="button" class="btn btn-dark mt-2" data-bs-toggle="modal" data-bs-target="#createJobModal">
-                        Go
-                    </button>
-                    <!-- <a class="btn btn-primary mt-2" style="text-decoration: none; color: white;" href="enter_job.php">Go</a> -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-3">
+                <div class="card bg-dark text-white border-secondary shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-secondary text-uppercase small">Outstanding</h6>
+                        <h2 class="display-6 fw-bold text-white"><?php echo $stats['Outstanding']; ?></h2>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="card text-center p-4">
-                    <h3>Manage Sites</h3>
-                    <a class="btn btn-dark mt-2" style="text-decoration: none; color: white;" href="manage_sites.php">Go</a>
+            <div class="col-md-3">
+                <div class="card bg-primary text-white shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-white-50 text-uppercase small">In Progress</h6>
+                        <h2 class="display-6 fw-bold"><?php echo $stats['In Progress']; ?></h2>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="card text-center p-4">
-                    <h3>Search Jobs</h3>
-                    <a class="btn btn-dark mt-2" style="text-decoration: none; color: white;" href="jobs_report.php">Go</a>
+            <div class="col-md-3">
+                <div class="card bg-success text-white shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-white-50 text-uppercase small">Completed</h6>
+                        <h2 class="display-6 fw-bold"><?php echo $stats['Completed']; ?></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-secondary text-white shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-white-50 text-uppercase small">Cancelled</h6>
+                        <h2 class="display-6 fw-bold"><?php echo $stats['Cancelled']; ?></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h5 class="text-muted mb-3"><i class="bi bi-lightning-charge-fill"></i> Quick Actions</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card action-card text-center p-4 border-secondary h-100" data-bs-toggle="modal" data-bs-target="#createJobModal">
+                            <div class="card-body">
+                                <i class="bi bi-plus-circle display-4 text-primary mb-3"></i>
+                                <h3>Enter New Job</h3>
+                                <p class="text-muted small">Create a new delivery consignment.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="jobs_report.php" class="text-decoration-none">
+                            <div class="card action-card text-center p-4 border-secondary h-100">
+                                <div class="card-body">
+                                    <i class="bi bi-search display-4 text-info mb-3"></i>
+                                    <h3 class="text-dark">Search Jobs</h3>
+                                    <p class="text-muted small">Find and track existing shipments.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-12">
+                        <a href="manage_sites.php" class="text-decoration-none">
+                            <div class="card action-card p-4 border-secondary">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div class="text-start">
+                                        <h3 class="text-dark mb-1">Manage Fleet</h3>
+                                        <p class="text-muted small mb-0">Manage and update vehicle information.</p>
+                                    </div>
+                                    <i class="bi bi-truck display-5 text-warning"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <h5 class="text-muted mb-3"><i class="bi bi-pie-chart-fill"></i> Performance</h5>
+                <div class="card border-secondary shadow-sm">
+                    <div class="card-body">
+                        <canvas id="jobChart"></canvas>
+                    </div>
+                    <div class="card-footer bg-white border-0 text-center text-muted small">
+                        Total Jobs in System
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +209,6 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 <input type="number" name="goods_quantity" class="form-control bg-secondary text-white border-0" required>
                             </div>
                         </div>
-
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -185,7 +283,6 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -213,12 +310,9 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
 
     <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
         <script>
-            // Wait for the page to fully load
             document.addEventListener('DOMContentLoaded', function() {
                 var myModal = new bootstrap.Modal(document.getElementById('successModal'));
                 myModal.show();
-                
-                // Clean the URL so a refresh doesn't show the modal again
                 const url = new URL(window.location);
                 url.searchParams.delete('status');
                 url.searchParams.delete('job_id');
@@ -228,6 +322,40 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
     <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const ctx = document.getElementById('jobChart').getContext('2d');
+        const jobChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Outstanding', 'In Progress', 'Completed', 'Cancelled'],
+                datasets: [{
+                    label: ' # of Jobs',
+                    data: [
+                        <?php echo $stats['Outstanding']; ?>, 
+                        <?php echo $stats['In Progress']; ?>, 
+                        <?php echo $stats['Completed']; ?>,
+                        <?php echo $stats['Cancelled']; ?>
+                    ],
+                    backgroundColor: [
+                        '#6c757d', // Grey (Outstanding)
+                        '#0d6efd', // Blue (In Progress)
+                        '#198754', // Green (Completed)
+                        '#dc3545'  // Red (Cancelled)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
