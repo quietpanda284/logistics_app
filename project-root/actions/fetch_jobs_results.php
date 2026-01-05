@@ -106,7 +106,7 @@ if (mysqli_num_rows($result) > 0) {
         $output .= "</tr>";
     }
 } else {
-    $output .= "<tr><td colspan='8' class='text-center text-muted py-4'>No jobs found matching your search.</td></tr>";
+    $output .= "<tr><td colspan='8' class='text-center text-white py-4'>No jobs found matching your search.</td></tr>";
 }
 
 echo $output;
