@@ -7,7 +7,16 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt.max_weight, vt.max_space 
+// MODIFIED: Added a subquery to check if the vehicle is busy
+$sql = "SELECT v.vehicle_id, v.registration_plate, s.site_name, vt.type_name, vt.max_weight, vt.max_space,
+        (CASE 
+            WHEN EXISTS (
+                SELECT 1 FROM jobs j 
+                WHERE j.assigned_vehicle_id = v.vehicle_id 
+                AND j.status IN ('Outstanding', 'In Progress')
+            ) THEN 1 
+            ELSE 0 
+        END) as is_busy
         FROM vehicles v
         LEFT JOIN sites s ON v.site_id = s.site_id
         JOIN vehicle_types vt ON v.type_id = vt.type_id
@@ -49,7 +58,7 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                             <tr class="text-muted">
                                 <th>Plate Number</th>
                                 <th>Type</th>
-                                <th>Capacity (kg)</th>
+                                <th>Status</th> <th>Capacity (kg)</th>
                                 <th>Max Space (m&sup3;)</th>
                                 <th>Home Site</th>
                                 <th>Action</th>
@@ -60,6 +69,15 @@ $types = mysqli_query($conn, "SELECT * FROM vehicle_types");
                                 <tr>
                                     <td class="fw-bold"><?php echo htmlspecialchars($row['registration_plate']); ?></td>
                                     <td><span class="badge bg-info text-dark"><?php echo $row['type_name']; ?></span></td>
+                                    
+                                    <td>
+                                        <?php if ($row['is_busy'] == 1): ?>
+                                            <span class="badge bg-danger">In Use</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-success">Available</span>
+                                        <?php endif; ?>
+                                    </td>
+
                                     <td><?php echo $row['max_weight']; ?> kg</td>
                                     <td><?php echo $row['max_space']; ?> m&sup3;</td>
                                     <td><?php echo $row['site_name']; ?></td>
