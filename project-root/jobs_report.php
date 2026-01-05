@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// FETCH DATA FOR THE "ADD JOB" MODAL
+// 1. FETCH DATA FOR THE "ADD JOB" MODAL
 $sites = [];
 $sql_sites = "SELECT * FROM sites";
 $result_sites = mysqli_query($conn, $sql_sites);
@@ -15,7 +15,7 @@ while ($row = mysqli_fetch_assoc($result_sites)) {
     $sites[] = $row;
 }
 
-// Fetch vehicles that are NOT currently busy
+// 2. Fetch vehicles that are NOT currently busy
 $vehicles = [];
 $sql_vehicles = "SELECT v.* FROM vehicles v
                  WHERE v.vehicle_id NOT IN (
@@ -58,12 +58,23 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                 </div>
 
                 <div class="row mb-3 g-2">
-                    <div class="col-md-9">
+                    <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-search"></i></span>
-                            <input type="text" id="search_input" class="form-control bg-dark text-white border-secondary" placeholder="Start typing to search (Goods, Job ID, Plate No)...">
+                            <input type="text" id="search_input" class="form-control bg-dark text-white border-secondary" placeholder="Search (Goods, Job ID, Plate No)...">
                         </div>
                     </div>
+                    
+                    <div class="col-md-3">
+                        <select id="filter_status" class="form-select bg-dark text-white border-secondary">
+                            <option value="All" selected>All Statuses</option>
+                            <option value="Outstanding">Outstanding</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
                     <div class="col-md-3">
                         <select id="sort_select" class="form-select bg-dark text-white border-secondary">
                             <option value="newest" selected>Newest First</option>
@@ -116,6 +127,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 <input type="number" name="goods_quantity" class="form-control bg-secondary text-white border-0" required>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Weight (kg)</label>
@@ -126,14 +138,17 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 <input type="number" name="size" class="form-control bg-secondary text-white border-0" required>
                             </div>
                         </div>
+
                         <div class="row align-items-center mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Assign Vehicle</label>
                                 <select name="vehicle_id" class="form-select bg-secondary text-white border-0" required>
                                     <option value="" selected disabled>Select Vehicle...</option>
-                                    <?php foreach ($vehicles as $vehicle) {
+                                    <?php
+                                    foreach ($vehicles as $vehicle) {
                                         echo "<option value='" . $vehicle['vehicle_id'] . "'>" . $vehicle['registration_plate'] . "</option>";
-                                    } ?>
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="col-md-6 pt-4">
@@ -143,26 +158,32 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Start Location</label>
                                 <select name="start_site_id" class="form-select bg-secondary text-white border-0" required>
                                     <option value="" selected disabled>Select Origin Site...</option>
-                                    <?php foreach ($sites as $site) {
+                                    <?php
+                                    foreach ($sites as $site) {
                                         echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
-                                    } ?>
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">End Location</label>
                                 <select name="end_site_id" class="form-select bg-secondary text-white border-0" required>
                                     <option value="" selected disabled>Select Destination...</option>
-                                    <?php foreach ($sites as $site) {
+                                    <?php
+                                    foreach ($sites as $site) {
                                         echo "<option value='" . $site['site_id'] . "'>" . $site['site_name'] . "</option>";
-                                    } ?>
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Start Date</label>
@@ -173,6 +194,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 <input type="date" name="deadline" class="form-control bg-secondary text-white border-0" required>
                             </div>
                         </div>
+
                         <div class="d-grid gap-2 mt-2">
                             <button type="submit" class="btn btn-primary">Submit Job</button>
                         </div>
@@ -182,7 +204,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
         </div>
     </div>
 
-    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-white border-secondary">
                 <div class="modal-header border-secondary">
@@ -206,16 +228,19 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
     <script src="js/jquery-3.7.1.min.js"></script>
 
     <script>
+        // 1. Unified Load Function (Search + Sort + Filter)
         function loadJobs() {
             var searchText = $("#search_input").val();
             var sortOption = $("#sort_select").val(); 
+            var filterStatus = $("#filter_status").val(); // Get filter value
             
             $.ajax({
                 url: "actions/fetch_jobs_results.php",
                 method: "POST",
                 data: {
                     query: searchText,
-                    sort: sortOption
+                    sort: sortOption,
+                    status_filter: filterStatus
                 },
                 success: function(data) {
                     $("#jobs_table_body").html(data);
@@ -224,11 +249,13 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
         }
 
         $(document).ready(function() {
-            loadJobs();
+            loadJobs(); // Load on start
             $("#search_input").on("keyup", function() { loadJobs(); });
             $("#sort_select").on("change", function() { loadJobs(); });
+            $("#filter_status").on("change", function() { loadJobs(); }); // New listener
         });
 
+        // 2. Status Modal Logic
         let currentSelectElement = null;
         const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
 
@@ -262,7 +289,10 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                 url: "actions/update_job_status.php",
                 method: "POST",
                 dataType: "json",
-                data: { job_id: jobId, status: status },
+                data: {
+                    job_id: jobId,
+                    status: status
+                },
                 success: function(response) {
                     if (response.status === 'success') {
                         statusModal.hide();
