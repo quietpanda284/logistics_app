@@ -96,7 +96,7 @@ while ($row = mysqli_fetch_assoc($result_vehicles)) {
                                 <th>Assigned Vehicle</th>
                                 <th>Dates</th>
                                 <th>Hazardous</th>
-                                <th>Current Status</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
