@@ -57,43 +57,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $inserted = 0;
                 
                 // 3. Loop to Generate Data
-                for ($i = 0; $i < $count; $i++) {
-                    // Random Data Generation
-                    $goods_list = ['Electronics', 'Furniture', 'Chemicals', 'Foodstuffs', 'Textiles', 'Machinery', 'Paper', 'Steel', 'Medical Supplies', 'Auto Parts'];
-                    $goods_name = $goods_list[array_rand($goods_list)] . " Batch-" . rand(100, 999);
+                // 3. Loop to Generate Data
+            for ($i = 0; $i < $count; $i++) {
+                
+                // --- A. Random Goods (Keep existing logic) ---
+                $goods_list = ['Electronics', 'Furniture', 'Chemicals', 'Foodstuffs', 'Textiles', 'Machinery', 'Paper', 'Steel', 'Medical Supplies', 'Auto Parts'];
+                $goods_name = $goods_list[array_rand($goods_list)] . " Batch-" . rand(100, 999);
+                $quantity = rand(10, 500);
+                $weight = rand(50, 5000);
+                $size = rand(1, 20);
+                $hazardous = (rand(1, 100) <= 20) ? 1 : 0; 
+                
+                // --- B. Random Status FIRST ---
+                // We determine status first so we can set the dates correctly
+                $rand_stat = rand(1, 10);
+                if ($rand_stat <= 6) $status = 'Completed';       // 60%
+                elseif ($rand_stat <= 8) $status = 'In Progress'; // 20%
+                elseif ($rand_stat <= 9) $status = 'Outstanding'; // 10%
+                else $status = 'Cancelled';                       // 10%
+
+                // --- C. Conditional Date Logic ---
+                if ($status == 'Outstanding' || $status == 'In Progress') {
+                    // RULE 1: Active Jobs = Deadline MUST be in the FUTURE
                     
-                    $quantity = rand(10, 500);
-                    $weight = rand(50, 5000);
-                    $size = rand(1, 20);
-                    $hazardous = (rand(1, 100) <= 20) ? 1 : 0; 
+                    // Start Date: 
+                    // 'In Progress' started recently (e.g., last 5 days). 
+                    // 'Outstanding' starts today or soon (e.g., next 5 days).
+                    $days_offset = ($status == 'In Progress') ? rand(-5, 0) : rand(0, 5);
+                    $start_date = date("Y-m-d", strtotime("$days_offset days"));
                     
-                    // Random Dates
-                    $start_timestamp = strtotime("-" . rand(0, 180) . " days"); 
+                    // Deadline:
+                    // Must be strictly in the future (e.g., +3 to +30 days from NOW)
+                    $deadline = date("Y-m-d", strtotime("+" . rand(3, 30) . " days"));
+
+                } else {
+                    // RULE 2: Inactive Jobs (Completed/Cancelled) = Allowed in the PAST
+                    
+                    // Start Date: Randomly in the last year
+                    $start_timestamp = strtotime("-" . rand(20, 365) . " days");
                     $start_date = date("Y-m-d", $start_timestamp);
-                    $deadline = date("Y-m-d", strtotime($start_date . " + " . rand(2, 10) . " days"));
                     
-                    // Random Route
-                    $start_site = $site_ids[array_rand($site_ids)];
-                    do {
-                        $end_site = $site_ids[array_rand($site_ids)];
-                    } while ($start_site == $end_site);
-                    
-                    // Random Vehicle
-                    $vehicle = $vehicle_ids[array_rand($vehicle_ids)];
-                    
-                    // Random Status
-                    $rand_stat = rand(1, 10);
-                    if ($rand_stat <= 6) $status = 'Completed'; 
-                    elseif ($rand_stat <= 8) $status = 'In Progress'; 
-                    elseif ($rand_stat <= 9) $status = 'Outstanding'; 
-                    else $status = 'Cancelled'; 
-                    
-                    mysqli_stmt_bind_param($stmt, "siiiissiiis", $goods_name, $quantity, $weight, $size, $hazardous, $start_date, $deadline, $start_site, $end_site, $vehicle, $status);
-                    
-                    if (mysqli_stmt_execute($stmt)) {
-                        $inserted++;
-                    }
+                    // Deadline: A few days after start (likely still in the past)
+                    $deadline = date("Y-m-d", strtotime($start_date . " + " . rand(2, 7) . " days"));
                 }
+                
+                // --- D. Random Route & Vehicle (Keep existing logic) ---
+                $start_site = $site_ids[array_rand($site_ids)];
+                do {
+                    $end_site = $site_ids[array_rand($site_ids)];
+                } while ($start_site == $end_site);
+                
+                // Simple Random Vehicle
+                $vehicle = $vehicle_ids[array_rand($vehicle_ids)];
+                
+                // --- E. Execute Insert ---
+                mysqli_stmt_bind_param($stmt, "siiiissiiis", $goods_name, $quantity, $weight, $size, $hazardous, $start_date, $deadline, $start_site, $end_site, $vehicle, $status);
+                
+                if (mysqli_stmt_execute($stmt)) {
+                    $inserted++;
+                }
+            }
                 $message = "Success! Generated $inserted random job records.";
                 $msg_type = "success";
                 mysqli_stmt_close($stmt);
