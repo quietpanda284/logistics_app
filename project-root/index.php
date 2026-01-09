@@ -32,7 +32,8 @@ $stats = [
 ];
 
 $sql_stats = "SELECT status, COUNT(*) as count FROM jobs 
-              WHERE start_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) 
+              WHERE status IN ('Outstanding', 'In Progress') 
+                 OR start_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) 
               GROUP BY status";
 $result_stats = mysqli_query($conn, $sql_stats);
 while ($row = mysqli_fetch_assoc($result_stats)) {
